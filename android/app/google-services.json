@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151756368529",
+    "project_id": "pandsproject-70db1",
+    "storage_bucket": "pandsproject-70db1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151756368529:android:03bd7da82069bd45a52d30",
+        "android_client_info": {
+          "package_name": "com.example.p"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDugo-yFM66kRf9fCERSXET6b5iQETkSJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
