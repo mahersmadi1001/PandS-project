@@ -8,7 +8,6 @@ class VisibilityPassword extends StatefulWidget {
 }
 
 class _VisibilityPasswordState extends State<VisibilityPassword> {
-  bool visibility_password = true;
   @override
   Widget build(BuildContext context) {
     return IconButton(
