@@ -31,7 +31,7 @@ class Onbording extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(),
-          SizedBox(height: 150.h),
+          SizedBox(height: 130.h),
           Container(
             height: 250.h,
             width: 250.w,
@@ -79,7 +79,7 @@ class Onbording extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.r),
                   verticalOffset: 0,
                 ),
-                spacing: 6.0,
+                spacing: 6.0.sp,
               ),
             ),
           ),

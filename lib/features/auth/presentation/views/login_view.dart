@@ -3,14 +3,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
 import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
+import 'package:p/core/shared/widgets/visibility_password.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/presentation/views/signup_view.dart';
 
-class LoginView extends StatelessWidget {
+bool visibility_password = true;
+
+class LoginView extends StatefulWidget {
   LoginView({super.key});
+
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   GlobalKey<FormState> loginKey = GlobalKey<FormState>();
+
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordLoginController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,18 +56,29 @@ class LoginView extends StatelessWidget {
                   Tff(
                     controller: emailController,
                     validator: (value) {
-                      AppValidators.validateEmail(value);
-
-                      return null;
+                      return AppValidators.validateEmail(value);
                     },
                     label: "Email",
                   ),
                   SizedBox(height: 40.h),
                   Tff(
-                    controller: emailController,
+                    obscureText: visibility_password,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        color: AppColors.textSecondaryDark,
+                        visibility_password
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_outlined,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          visibility_password = !visibility_password;
+                        });
+                      },
+                    ),
+                    controller: passwordLoginController,
                     validator: (value) {
-                      AppValidators.validatePassword(value);
-                      return null;
+                      return AppValidators.validatePassword(value);
                     },
                     label: "Password",
                   ),
@@ -69,7 +92,7 @@ class LoginView extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(height: 30.h),
+                  SizedBox(height: 25.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

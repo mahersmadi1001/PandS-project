@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:p/core/config/di.dart';
 import 'package:p/core/shared/material_app_class.dart';
-import 'package:p/core/shared/widgets/onbording.dart';
-import 'package:p/core/theme/app_theme.dart';
-import 'package:p/features/auth/presentation/views/splash_view.dart';
+
 import 'package:p/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,8 +17,12 @@ void main() async {
     url: 'uscnnlokapfxozeuxdex',
     anonKey: 'sb_publishable_1sO_oZNgWOF0p4GZh5Mjyw_40Xk8PnK',
   );
-
-  runApp(const PandS());
+  await Hive.initFlutter();
+  await Hive.openBox('auth_box');
+  await init();
+  runApp(
+    const PandS(),
+  );
 }
 
 class PandS extends StatelessWidget {
@@ -32,4 +38,3 @@ class PandS extends StatelessWidget {
     );
   }
 }
- 
