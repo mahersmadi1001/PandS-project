@@ -53,6 +53,8 @@ dependencies:
   smooth_page_indicator: ^2.0.1
   cloud_firestore: ^6.3.0
   uuid: ^4.5.3
+  glaze_nav_bar: ^1.2.1
+  carousel_slider: ^5.1.2
 
 dev_dependencies:
   flutter_test:

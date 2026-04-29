@@ -6,23 +6,23 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:p/core/config/di.dart';
 import 'package:p/core/shared/material_app_class.dart';
+import 'package:p/features/auth/presentation/view_model/bloc/register_bloc.dart';
 
 import 'package:p/firebase_options.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
-    url: 'uscnnlokapfxozeuxdex',
+    url: 'https://uscnnlokapfxozeuxdex.supabase.co',
     anonKey: 'sb_publishable_1sO_oZNgWOF0p4GZh5Mjyw_40Xk8PnK',
   );
   await Hive.initFlutter();
   await Hive.openBox('auth_box');
   await init();
-  runApp(
-    const PandS(),
-  );
+  runApp(const PandS());
 }
 
 class PandS extends StatelessWidget {
@@ -34,7 +34,11 @@ class PandS extends StatelessWidget {
       designSize: Size(436, 732),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) => MaterialAppClass(),
+      builder: (context, child) => BlocProvider(
+        create: (context) => sl<RegisterBloc>(),
+
+        child: MaterialAppClass(),
+      ),
     );
   }
 }

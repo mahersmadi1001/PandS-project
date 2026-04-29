@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
 import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
-import 'package:p/core/shared/widgets/visibility_password.dart';
+
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/presentation/views/signup_view.dart';
+import 'package:p/view_temp/nav_bar.dart';
 
 bool visibility_password = true;
 
@@ -87,8 +88,10 @@ class _LoginViewState extends State<LoginView> {
                     buttonText: "Entry",
                     ontap: () {
                       if (loginKey.currentState!.validate()) {
-                        return;
-                        // HomeView();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainScreen()),
+                        );
                       }
                     },
                   ),

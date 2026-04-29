@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:p/core/config/di.dart';
 
 import 'package:p/core/shared/widgets/onbording.dart';
-import 'package:p/features/auth/domain/usecases/sginup_usecase.dart';
-import 'package:p/features/auth/presentation/view_model/bloc/register_bloc.dart';
+
 import 'package:p/features/auth/presentation/views/signup_view.dart';
 
 import 'package:p/features/auth/presentation/widgets/back_button.dart';
@@ -62,13 +59,7 @@ class PageViewOnbording extends StatelessWidget {
           button: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => sl<RegisterBloc>(),
-
-                  child: SignUpView(),
-                ),
-              ),
+              MaterialPageRoute(builder: (context) => SignUpView()),
             );
           },
           buttonText: "Start",
