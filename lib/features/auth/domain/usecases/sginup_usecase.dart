@@ -6,7 +6,8 @@ import 'package:p/features/auth/domain/repositories/auth_reposatory.dart';
 class SginupUsecase {
   final AuthRepository repository;
   SginupUsecase({required this.repository});
-  Future<Either<Failure, void>> call(UserEntity user) async {
-    return await repository.register(user: user);
+
+  Future<Either<Failure, void>> call(UserEntity user) {
+    return repository.register(user: user);
   }
 }

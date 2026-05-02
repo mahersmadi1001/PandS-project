@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/setting_item.dart';
+import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -9,7 +10,10 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("الإعدادات")),
+      appBar: AppBar(
+        backgroundColor: AppColors.primaryBlue,
+        title: TitleAppBar(title: "Settings"),
+      ),
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: Padding(

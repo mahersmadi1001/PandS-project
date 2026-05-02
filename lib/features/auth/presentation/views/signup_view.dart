@@ -6,244 +6,221 @@ import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/domain/entities/user.dart';
-import 'package:p/features/auth/presentation/view_model/bloc/register_bloc.dart';
+import 'package:p/features/auth/presentation/view_model/Register_bloc/register_bloc.dart';
 
 import 'package:p/features/auth/presentation/views/login_view.dart';
+import 'package:p/view_temp/nav_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class SignUpView extends StatefulWidget {
-  SignUpView({super.key});
+  const SignUpView({super.key});
 
   @override
   State<SignUpView> createState() => _SignUpViewState();
 }
 
 class _SignUpViewState extends State<SignUpView> {
-  GlobalKey<FormState> signUpKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  final _fullNameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  final _confirmPasswordCtrl = TextEditingController();
+  bool _showPassword = false;
 
-  TextEditingController fullNameController = TextEditingController();
+  @override
+  void dispose() {
+    _fullNameCtrl.dispose();
+    _emailCtrl.dispose();
+    _phoneCtrl.dispose();
+    _passwordCtrl.dispose();
+    _confirmPasswordCtrl.dispose();
+    super.dispose();
+  }
 
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController phoneController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
-
-  TextEditingController valPasswordController = TextEditingController();
-
-  bool visibility_password = true;
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    context.read<RegisterBloc>().add(
+      RegisterSubmitted(
+        user: UserEntity(
+          uId: const Uuid().v4(),
+          fullName: _fullNameCtrl.text.trim(),
+          email: _emailCtrl.text.trim(),
+          phone: _phoneCtrl.text.trim(),
+          password: _passwordCtrl.text,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
-        key: signUpKey,
-        child: Column(
-          children: [
-            Row(),
-            SizedBox(height: 40.h),
-
-            Container(
-              height: 650.h,
-              width: 400.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(25.r)),
-                color: AppColors.lightBlue,
+    return BlocConsumer<RegisterBloc, RegisterState>(
+      listener: (context, state) {
+        if (state is RegisterError) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppColors.errorRed,
+                behavior: SnackBarBehavior.floating,
               ),
+            );
+        }
+        if (state is RegisterSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('تم إنشاء الحساب بنجاح ✓'),
+                backgroundColor: AppColors.successGreen,
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => MainScreen()),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 20.h),
+            child: Form(
+              key: _formKey,
               child: Column(
                 children: [
-                  SizedBox(height: 30.h),
-                  Text(
-                    "Sign Up",
-                    style: TextStyle(
-                      color: AppColors.primaryBlue,
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.bold,
+                  SizedBox(height: 50.h),
+                  Container(
+                    width: 400.w,
+                    margin: EdgeInsets.symmetric(horizontal: 18.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.r),
+                      color: AppColors.lightBlue,
                     ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Expanded(
-                    child: Tff(
-                      controller: fullNameController,
-                      validator: (value) {
-                        return AppValidators.validateName(value);
-                      },
-                      label: "Full Name",
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 25.h,
                     ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Expanded(
-                    child: Tff(
-                      controller: emailController,
-                      validator: (value) {
-                        return AppValidators.validateEmail(value);
-                      },
-                      label: "Email",
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Expanded(
-                    child: Tff(
-                      controller: phoneController,
-                      validator: (value) {
-                        return AppValidators.validateSyrianPhone(value);
-                      },
-                      label: "Phone",
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Expanded(
-                    child: Tff(
-                      obscureText: visibility_password,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          color: AppColors.textSecondaryDark,
-                          visibility_password
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_outlined,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            visibility_password = !visibility_password;
-                          });
-                        },
-                      ),
-                      controller: passwordController,
-                      validator: (value) {
-                        return AppValidators.validatePassword(value);
-                      },
-                      label: "Password",
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-                  Expanded(
-                    child: Tff(
-                      obscureText: visibility_password,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          color: AppColors.textSecondaryDark,
-                          visibility_password
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_outlined,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            visibility_password = !visibility_password;
-                          });
-                        },
-                      ),
-                      controller: valPasswordController,
-                      validator: (value) {
-                        if (passwordController.text != value) {
-                          return "password is not valid";
-                        }
-                      },
-                      label: "Validate Password",
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-
-                  BlocBuilder<RegisterBloc, RegisterState>(
-                    builder: (context, state) {
-                      switch (state) {
-                        case RegisterSucssfoled():
-                        case RegisterInitial():
-                          return CustomButton(
-                            buttonText: "Registration",
-                            ontap: () {
-                              if (signUpKey.currentState!.validate()) {
-                                try {
-                                  context.read<RegisterBloc>().add(
-                                    SginupEvent(
-                                      user: UserEntity(
-                                        uId: Uuid().v4(),
-                                        fullName: fullNameController.text,
-                                        email: emailController.text,
-                                        phone: phoneController.text,
-                                        password: passwordController.text,
-                                      ),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  print(e);
-                                }
-                              }
-                            },
-                          );
-
-                        case RegisterLoading():
-                          return CircularProgressIndicator();
-
-                        case RegisterError():
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.massege)),
-                          );
-                          return CustomButton(
-                            buttonText: "Registration",
-                            ontap: () {
-                              try {} catch (e) {}
-                              if (signUpKey.currentState!.validate()) {
-                                try {
-                                  context.read<RegisterBloc>().add(
-                                    SginupEvent(
-                                      user: UserEntity(
-                                        uId: Uuid().v4(),
-                                        fullName: fullNameController.text,
-                                        email: emailController.text,
-                                        phone: phoneController.text,
-                                        password: passwordController.text,
-                                      ),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  print(e);
-                                }
-                              }
-                            },
-                          );
-                      }
-                    },
-                  ),
-
-                  // ),
-                  SizedBox(height: 20.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Do you have an account?",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                          color: AppColors.textSecondaryDark,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginView(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Login",
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Sign Up',
                           style: TextStyle(
-                            fontSize: 18.sp,
+                            color: AppColors.primaryBlue,
+                            fontSize: 30.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 30.h),
+                        Tff(
+                          controller: _fullNameCtrl,
+                          validator: AppValidators.validateName,
+                          label: 'Full Name',
+                        ),
+                        SizedBox(height: 22.h),
+                        Tff(
+                          controller: _emailCtrl,
+                          validator: AppValidators.validateEmail,
+                          label: 'Email',
+                        ),
+                        SizedBox(height: 22.h),
+                        Tff(
+                          controller: _phoneCtrl,
+                          validator: AppValidators.validateSyrianPhone,
+                          label: 'Phone',
+                        ),
+                        SizedBox(height: 22.h),
+                        Tff(
+                          controller: _passwordCtrl,
+                          obscureText: !_showPassword,
+                          validator: AppValidators.validatePassword,
+                          label: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_rounded,
+                              color: AppColors.textSecondaryDark,
+                            ),
+                            onPressed: () =>
+                                setState(() => _showPassword = !_showPassword),
+                          ),
+                        ),
+                        SizedBox(height: 22.h),
+                        Tff(
+                          controller: _confirmPasswordCtrl,
+                          obscureText: !_showPassword,
+                          label: 'Confirm Password',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please confirm your password';
+                            }
+                            if (value != _passwordCtrl.text) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_rounded,
+                              color: AppColors.textSecondaryDark,
+                            ),
+                            onPressed: () =>
+                                setState(() => _showPassword = !_showPassword),
+                          ),
+                        ),
+                        SizedBox(height: 22.h),
+                        state is RegisterLoading
+                            ? const CircularProgressIndicator()
+                            : CustomButton(
+                                buttonText: 'Registration',
+                                ontap: _submit,
+                              ),
+                        SizedBox(height: 14.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Do you have an account?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.sp,
+                                color: AppColors.textSecondaryDark,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginView(),
+                                ),
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 20.h),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

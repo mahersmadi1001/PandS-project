@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:p/core/theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -20,7 +21,11 @@ class CustomTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+            color: AppColors.primaryBlue,
+          ),
         ),
         SizedBox(height: 8.h),
         TextField(
@@ -35,7 +40,7 @@ class CustomTextField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: Colors.grey.shade200),
+              borderSide: BorderSide(color: AppColors.primaryBlue),
             ),
           ),
         ),

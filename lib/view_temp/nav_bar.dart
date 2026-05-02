@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:glaze_nav_bar/glaze_nav_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
-import 'package:p/view_temp/creat_order.dart';
+import 'package:p/features/create_post/presentation/views/creat_order.dart';
 import 'package:p/view_temp/hesstory_screen.dart';
 import 'package:p/view_temp/home_screen.dart';
 import 'package:p/view_temp/profile_screen.dart';
