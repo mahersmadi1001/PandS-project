@@ -1,9 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:p/core/services/history_service.dart';
+import 'package:p/core/shared/widgets/post_card.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
-import 'package:p/view_temp/job_card_widget.dart';
+import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -12,96 +13,246 @@ class HistoryScreen extends StatefulWidget {
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _HistoryScreenState extends State<HistoryScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryBlue,
-        title: TitleAppBar(title: "Hisstory"),
+        title: TitleAppBar(title: "السجل"),
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+          tabs: [
+            Tab(text: 'طلباتي'),
+            Tab(text: 'عروضي'),
+          ],
+        ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          SizedBox(height: 10.h),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Requests",
-              style: TextStyle(
-                color: AppColors.primaryBlue,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+          // Requests tab
+          FutureBuilder<List<PostEntity>>(
+            future: HistoryService.getRequestedPosts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final requestedPosts = snapshot.data ?? [];
+
+              if (requestedPosts.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.inbox_outlined,
+                        size: 64.w,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'لا توجد طلبات محفوظة',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'ابدأ بإنشاء طلب جديد',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Group posts by category
+              final Map<String, List<PostEntity>> postsByCategory = {};
+              for (final post in requestedPosts) {
+                final category = post.category;
+                if (!postsByCategory.containsKey(category)) {
+                  postsByCategory[category] = [];
+                }
+                postsByCategory[category]!.add(post);
+              }
+
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                itemCount: postsByCategory.keys.length,
+                itemBuilder: (context, index) {
+                  final category = postsByCategory.keys.elementAt(index);
+                  final categoryPosts = postsByCategory[category]!;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8.h),
+                      // Category header
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          '$category (${categoryPosts.length})',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[800],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+                      // Posts in this category
+                      ...categoryPosts.map(
+                        (post) => Padding(
+                          padding: EdgeInsets.only(bottom: 8.h),
+                          child: PostCard(
+                            post: post,
+                            onTap: () {
+                              // Navigate to post details
+                            },
+                            onOfferTap: null, // No offer button for history
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
-          SizedBox(height: 20.h),
-          SizedBox(
-            height: 200.h,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                aspectRatio: 2.0,
-              ),
-              items: [
-                JobCardWidget(
-                  title: "mmm",
-                  location: "aksjd",
-                  priceRange: "alskjd",
-                  authorName: "asldkj",
-                  timeAgo: "amsdnas",
-                ),
-                JobCardWidget(
-                  title: "mmm",
-                  location: "aksjd",
-                  priceRange: "alskjd",
-                  authorName: "asldkj",
-                  timeAgo: "amsdnas",
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.h),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Offers",
-              style: TextStyle(
-                color: AppColors.primaryBlue,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          SizedBox(height: 20.h),
-          SizedBox(
-            height: 200.h,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                aspectRatio: 2.0,
-              ),
-              items: [
-                JobCardWidget(
-                  title: "mmm",
-                  location: "aksjd",
-                  priceRange: "alskjd",
-                  authorName: "asldkj",
-                  timeAgo: "amsdnas",
-                ),
-                JobCardWidget(
-                  title: "mmm",
-                  location: "aksjd",
-                  priceRange: "alskjd",
-                  authorName: "asldkj",
-                  timeAgo: "amsdnas",
-                ),
-              ],
-            ),
+
+          // Offers tab
+          FutureBuilder<List<PostEntity>>(
+            future: HistoryService.getOfferedPosts(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final offeredPosts = snapshot.data ?? [];
+
+              if (offeredPosts.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.inbox_outlined,
+                        size: 64.w,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'لا توجد عروض محفوظة',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'ابدأ بإنشاء عرض جديد',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Group posts by category
+              final Map<String, List<PostEntity>> postsByCategory = {};
+              for (final post in offeredPosts) {
+                final category = post.category;
+                if (!postsByCategory.containsKey(category)) {
+                  postsByCategory[category] = [];
+                }
+                postsByCategory[category]!.add(post);
+              }
+
+              return ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                itemCount: postsByCategory.keys.length,
+                itemBuilder: (context, index) {
+                  final category = postsByCategory.keys.elementAt(index);
+                  final categoryPosts = postsByCategory[category]!;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8.h),
+                      // Category header
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green[50],
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          '$category (${categoryPosts.length})',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green[800],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+                      // Posts in this category
+                      ...categoryPosts.map(
+                        (post) => Padding(
+                          padding: EdgeInsets.only(bottom: 8.h),
+                          child: PostCard(
+                            post: post,
+                            onTap: () {
+                              // Navigate to post details
+                            },
+                            onOfferTap: null, // No offer button for history
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
         ],
       ),

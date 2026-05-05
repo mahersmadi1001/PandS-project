@@ -55,6 +55,7 @@ dependencies:
   uuid: ^4.5.3
   glaze_nav_bar: ^1.2.1
   carousel_slider: ^5.1.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

@@ -9,7 +9,7 @@ import 'package:p/features/auth/presentation/view_model/Register_bloc/register_b
 
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
 import 'package:p/features/auth/presentation/views/signup_view.dart';
-import 'package:p/view_temp/nav_bar.dart';
+import 'package:p/core/shared/widgets/nav_bar.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

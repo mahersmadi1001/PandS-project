@@ -9,7 +9,7 @@ import 'package:p/features/auth/domain/entities/user.dart';
 import 'package:p/features/auth/presentation/view_model/Register_bloc/register_bloc.dart';
 
 import 'package:p/features/auth/presentation/views/login_view.dart';
-import 'package:p/view_temp/nav_bar.dart';
+import 'package:p/core/shared/widgets/nav_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class SignUpView extends StatefulWidget {
