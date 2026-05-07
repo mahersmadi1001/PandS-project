@@ -4,7 +4,7 @@ import 'package:p/features/splash_and_onboarding/presentation/widgets/onbording.
 
 import 'package:p/features/auth/presentation/view_model/user_session/user_session_bloc.dart';
 import 'package:p/features/auth/presentation/views/login_view.dart';
-import 'package:p/features/auth/presentation/widgets/back_button.dart';
+import 'package:p/features/splash_and_onboarding/presentation/widgets/back_button.dart';
 
 class PageViewOnbording extends StatelessWidget {
   PageViewOnbording({super.key});

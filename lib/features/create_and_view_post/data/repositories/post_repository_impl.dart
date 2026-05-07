@@ -68,6 +68,7 @@ class PostRepositoryImpl implements PostRepository {
     String? category,
     String? searchQuery,
     String? province,
+    String? userId,
   }) async {
     try {
       final posts = await remote.getPosts(
@@ -75,8 +76,19 @@ class PostRepositoryImpl implements PostRepository {
         category: category,
         searchQuery: searchQuery,
         province: province,
+        userId: userId,
       );
       return Right(posts);
+    } catch (e) {
+      return Left(ServerFailure(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deletePost(String postId) async {
+    try {
+      await remote.deletePost(postId);
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString().replaceAll('Exception: ', '')));
     }

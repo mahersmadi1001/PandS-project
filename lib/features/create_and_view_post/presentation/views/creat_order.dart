@@ -2,17 +2,21 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:p/core/shared/widgets/cttf.dart';
+import 'package:p/core/shared/widgets/custom_text_field.dart';
+import 'package:p/core/shared/widgets/snack_bar_widget.dart';
+
 import 'package:p/core/shared/widgets/title_app_bar.dart';
-import 'package:p/core/string/list_addrees_string.dart';
+
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/snack_bar_widjet.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/button_show_list_address.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/button_show_list_category.dart';
+
 import 'package:p/features/create_and_view_post/presentation/widgets/chips_widet.dart';
-import 'package:p/core/shared/widgets/list_address.dart';
-import 'package:p/core/shared/widgets/nav_bar.dart';
+
+import 'package:p/core/shared/nav_bar.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/upload_box.dart';
 
 class CreateOrderScreen extends StatefulWidget {
@@ -23,13 +27,13 @@ class CreateOrderScreen extends StatefulWidget {
 }
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
-  final _titleController = TextEditingController();
-  final _budgetController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  final titleController = TextEditingController();
+  final budgetController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   PostType _selectedPostType = PostType.offer;
-  String? _selectedCategory;
-  String? _selectedProvince;
+  String? selectedCategory;
+  String? selectedProvince;
   File? _selectedImage;
 
   final _formKey = GlobalKey<FormState>();
@@ -44,19 +48,19 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _budgetController.dispose();
-    _descriptionController.dispose();
+    titleController.dispose();
+    budgetController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
   bool validateForm() {
     final validationError = AppValidators.getFirstValidationError(
-      title: _titleController.text.trim(),
-      category: _selectedCategory,
-      province: _selectedProvince,
-      budget: _budgetController.text.trim(),
-      description: _descriptionController.text.trim(),
+      title: titleController.text.trim(),
+      category: selectedCategory,
+      province: selectedProvince,
+      budget: budgetController.text.trim(),
+      description: descriptionController.text.trim(),
       imageFile: _selectedImage,
     );
 
@@ -85,10 +89,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         creatorId: _currentUserId!,
         creatorName: _currentUserName!,
         postType: _selectedPostType,
-        category: _selectedCategory!,
-        description: _descriptionController.text.trim(),
-        province: _selectedProvince!,
-        price: _budgetController.text.trim(),
+        category: selectedCategory!,
+        description: descriptionController.text.trim(),
+        province: selectedProvince!,
+        price: budgetController.text.trim(),
         imageFile: _selectedImage!,
       ),
     );
@@ -98,12 +102,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   Widget build(BuildContext context) {
     return BlocListener<CreatePostBloc, CreatePostState>(
       listener: (context, state) {
-        if (state is CreatePostFailure) {
-          showErrorSnackBar(context: context, message: state.message);
-        } else if (state is CreatePostSuccess) {
+        if (state is CreatePostSuccess) {
           showSuccessSnackBar(
+            message: "Post created successfully",
             context: context,
-            message: 'Post created successfully!',
           );
           Navigator.pushReplacement(
             context,
@@ -140,129 +142,31 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             label: "Title",
                             hint:
                                 "Example: professional logo design is required",
-                            controller: _titleController,
+                            controller: titleController,
                           ),
                           Row(
                             children: [
                               Expanded(
-                                child: MaterialButton(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: AppColors.primaryBlue,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadiusGeometry.all(
-                                      Radius.circular(16.r),
-                                    ),
-                                  ),
-
-                                  height: 55.h,
-                                  minWidth: 240.w,
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      isDismissible: true,
-                                      isScrollControlled: true,
-                                      backgroundColor: AppColors.cardLight,
-                                      context: context,
-                                      builder: (context) {
-                                        return SizedBox(
-                                          height: 500.h,
-                                          child: Center(
-                                            child: ListAddress(
-                                              items:
-                                                  ConstensApp.serviceCategories,
-                                              selectedItem: _selectedCategory,
-                                              onSelected: (category) {
-                                                setState(() {
-                                                  _selectedCategory = category;
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                                child: ButtonShowListCategory(
+                                  selectedCategory:
+                                      selectedCategory ?? "Categories",
+                                  onCategorySelected: (category) {
+                                    setState(() {
+                                      selectedCategory = category;
+                                    });
                                   },
-                                  child: Expanded(
-                                    child: Row(
-                                      spacing: 8.w,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            _selectedCategory ?? "Categories",
-                                            style: TextStyle(
-                                              color: AppColors.primaryBlue,
-                                            ),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_downward,
-                                          color: AppColors.primaryBlue,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                               ),
                               SizedBox(width: 20.w),
                               Expanded(
-                                child: MaterialButton(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: AppColors.primaryBlue,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadiusGeometry.all(
-                                      Radius.circular(16.r),
-                                    ),
-                                  ),
-
-                                  height: 55.h,
-                                  minWidth: 240.w,
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      isDismissible: true,
-                                      backgroundColor: AppColors.cardLight,
-                                      context: context,
-                                      builder: (context) {
-                                        return SizedBox(
-                                          height: 300.h,
-                                          child: Center(
-                                            child: ListAddress(
-                                              items: ConstensApp
-                                                  .syrianGovernorates,
-                                              selectedItem: _selectedProvince,
-                                              onSelected: (province) {
-                                                setState(() {
-                                                  _selectedProvince = province;
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                                child: ButtonShowListAddrees(
+                                  selectedProvince:
+                                      selectedProvince ?? "Address",
+                                  onProvinceSelected: (province) {
+                                    setState(() {
+                                      selectedProvince = province;
+                                    });
                                   },
-                                  child: Row(
-                                    spacing: 8.w,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        _selectedProvince ?? "Addrees",
-                                        style: TextStyle(
-                                          color: AppColors.primaryBlue,
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_downward,
-                                        color: AppColors.primaryBlue,
-                                      ),
-                                    ],
-                                  ),
                                 ),
                               ),
                             ],
@@ -276,7 +180,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                 child: CustomTextField(
                                   label: "Budget",
                                   hint: "50\$",
-                                  controller: _budgetController,
+                                  controller: budgetController,
                                   keyboardType: TextInputType.number,
                                 ),
                               ),
@@ -320,7 +224,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             label: "Detailed description",
                             hint: "Explain what you need in detail...",
                             maxLines: 4,
-                            controller: _descriptionController,
+                            controller: descriptionController,
                           ),
 
                           UploadBox(

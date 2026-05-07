@@ -13,12 +13,14 @@ class GetPostsUsecase {
     String? category,
     String? searchQuery,
     String? province,
+    String? userId,
   }) {
     return repository.getPosts(
       postType: postType,
       category: category,
       searchQuery: searchQuery,
       province: province,
+      userId: userId,
     );
   }
 }

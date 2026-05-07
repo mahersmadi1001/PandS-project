@@ -28,11 +28,11 @@ class HomeScreen extends StatelessWidget {
             labelStyle: TextStyle(color: AppColors.lightBlue),
             tabs: [
               Tab(
-                text: "الطلبات",
+                text: "Requsets",
                 icon: Icon(Icons.request_page, color: AppColors.lightBlue),
               ),
               Tab(
-                text: "العروض",
+                text: "Offers",
                 icon: Icon(
                   Icons.remember_me_rounded,
                   color: AppColors.lightBlue,
@@ -43,12 +43,11 @@ class HomeScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            // Requests tab with its own BLoC instance
             BlocProvider(
               create: (context) => sl<GetPostsBloc>(),
               child: const RequsetsPage(),
             ),
-            // Offers tab with its own BLoC instance
+
             BlocProvider(
               create: (context) => sl<GetPostsBloc>(),
               child: const OffersPage(),

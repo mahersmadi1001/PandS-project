@@ -7,6 +7,7 @@ class SettingsTile extends StatelessWidget {
   final String subtitle;
   final IconData icon;
   final Color? textColor;
+  final VoidCallback? onTap;
 
   const SettingsTile({
     super.key,
@@ -14,6 +15,7 @@ class SettingsTile extends StatelessWidget {
     required this.subtitle,
     required this.icon,
     this.textColor,
+    this.onTap,
   });
 
   @override
@@ -25,6 +27,7 @@ class SettingsTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: ListTile(
+        onTap: onTap,
         leading: Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(

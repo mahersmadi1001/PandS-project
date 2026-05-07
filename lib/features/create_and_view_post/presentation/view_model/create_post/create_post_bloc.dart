@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:p/core/services/history_service.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/domain/usecases/create_post_usecase.dart';
 import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
+import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 part 'create_post_event.dart';
@@ -13,13 +13,13 @@ part 'create_post_state.dart';
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
   final CreatePostUsecase createPostUsecase;
   final GetSavedSessionUsecase getSavedSessionUsecase;
-  final HistoryService historyService;
+  final HistoryBloc historyBloc;
 
   CreatePostBloc({
     required this.createPostUsecase,
     required this.getSavedSessionUsecase,
-  }) : historyService = HistoryService(),
-       super(const CreatePostInitial()) {
+    required this.historyBloc,
+  }) : super(const CreatePostInitial()) {
     on<CreatePostSubmitted>(_onCreatePostSubmitted);
     on<LoadUserData>(_onLoadUserData);
   }
@@ -89,8 +89,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
 
       result.fold(
         (failure) => emit(CreatePostFailure(message: failure.message)),
-        (imageUrl) async {
-          // Create post entity with image URL
+        (imageUrl) {
           final completePost = PostEntity(
             postId: postId,
             creatorId: event.creatorId,
@@ -103,12 +102,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             image: imageUrl,
             createdAt: createdAt,
           );
-
-          // Save to history
-          await HistoryService.savePostToHistory(completePost);
-
-          emit(const CreatePostSuccess());
-          return const CreatePostSuccess();
+          emit(CreatePostSuccess(post: completePost));
+          // Save post to history
+          historyBloc.add(SavePostToHistory(post: completePost));
         },
       );
     } catch (e) {

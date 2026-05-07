@@ -4,12 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
 import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
+import 'package:p/core/shared/widgets/snack_bar_widget.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/domain/entities/user.dart';
 import 'package:p/features/auth/presentation/view_model/Register_bloc/register_bloc.dart';
 
 import 'package:p/features/auth/presentation/views/login_view.dart';
-import 'package:p/core/shared/widgets/nav_bar.dart';
+import 'package:p/core/shared/nav_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class SignUpView extends StatefulWidget {
@@ -58,26 +59,13 @@ class _SignUpViewState extends State<SignUpView> {
     return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterError) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.errorRed,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+          showErrorSnackBar(message: state.message, context: context);
         }
         if (state is RegisterSuccess) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('تم إنشاء الحساب بنجاح ✓'),
-                backgroundColor: AppColors.successGreen,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+          showSuccessSnackBar(
+            message: 'تم إنشاء الحساب بنجاح ✓',
+            context: context,
+          );
 
           Navigator.pushReplacement(
             context,

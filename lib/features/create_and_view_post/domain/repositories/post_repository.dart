@@ -22,5 +22,9 @@ abstract class PostRepository {
     String? category,
     String? searchQuery,
     String? province,
+    String? userId,
   });
+
+  /// حذف منشور معين من Firestore
+  Future<Either<Failure, void>> deletePost(String postId);
 }

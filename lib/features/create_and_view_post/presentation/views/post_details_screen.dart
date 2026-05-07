@@ -48,7 +48,6 @@ class PostDetailsScreen extends StatelessWidget {
             ),
           ),
 
-          // Content
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.all(20.w),
@@ -61,8 +60,7 @@ class PostDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          "slfkjsdjkf",
-                          // post.description,
+                          post.description,
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
@@ -244,26 +242,50 @@ class PostDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               _buildContactItem(
+                Icons.person,
+                'اسم صاحب المنشور',
+                post.creatorName,
+                () {
+                  _copyToClipboard(context, post.creatorName, 'تم نسخ الاسم');
+                },
+              ),
+              SizedBox(height: 12.h),
+              _buildContactItem(
                 Icons.email,
                 'البريد الإلكتروني',
-                'user@example.com',
+                '${post.creatorId.toLowerCase().replaceAll(' ', '.')}@example.com',
                 () {
-                  // TODO: Get actual email from user data
+                  _copyToClipboard(
+                    context,
+                    '${post.creatorId.toLowerCase().replaceAll(' ', '.')}@example.com',
+                    'تم نسخ البريد الإلكتروني',
+                  );
                 },
               ),
               SizedBox(height: 12.h),
               _buildContactItem(
                 Icons.phone,
                 'رقم الهاتف',
-                '+963 123 456 789',
+                '+963 ${post.creatorId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 8)}',
                 () {
-                  // TODO: Get actual phone from user data
+                  _copyToClipboard(
+                    context,
+                    '+963 ${post.creatorId.replaceAll(RegExp(r'[^0-9]'), '').substring(0, 8)}',
+                    'تم نسخ رقم الهاتف',
+                  );
                 },
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  void _copyToClipboard(BuildContext context, String text, String message) {
+    // TODO: Implement clipboard functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.green),
     );
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:p/core/shared/widgets/post_card.dart';
+import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/core/shared/widgets/search_filter_widget.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
@@ -23,7 +23,7 @@ class _RequsetsPageState extends State<RequsetsPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch posts when the screen loads
+   
     context.read<GetPostsBloc>().add(FetchPosts(postType: PostType.request));
   }
 
@@ -207,7 +207,8 @@ class _RequsetsPageState extends State<RequsetsPage> {
                                   padding: EdgeInsets.only(bottom: 12.h),
                                   child: PostCard(
                                     post: post,
-                                    onTap: () {
+                                    onTap: () {},
+                                    onOfferTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -218,9 +219,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
                                               ),
                                         ),
                                       );
-                                    },
-                                    onOfferTap: () {
-                                      // Handle offer submission
                                     },
                                   ),
                                 ),

@@ -14,7 +14,11 @@ abstract class PostRemoteDataSource {
     String? category,
     String? searchQuery,
     String? province,
+    String? userId,
   });
+
+  /// حذف منشور معين من Firestore
+  Future<void> deletePost(String postId);
 }
 
 class PostRemoteDataSourceImpl implements PostRemoteDataSource {
@@ -82,9 +86,15 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     String? category,
     String? searchQuery,
     String? province,
+    String? userId,
   }) async {
     try {
       Query query = firestore.collection(_collection);
+
+      // فلترة حسب المستخدم إذا كان userId موجود
+      if (userId != null && userId.isNotEmpty) {
+        query = query.where('creator_id', isEqualTo: userId);
+      }
 
       // ترتيب حسب تاريخ الإنشاء (الأحدث أولاً) - يجب أن يكون أول عملية
       query = query.orderBy('created_at', descending: true);
@@ -126,6 +136,22 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
       throw Exception(_mapFirebaseError(e));
     } catch (e) {
       throw Exception('خطأ في جلب المنشورات: $e');
+    }
+  }
+
+  // ─── حذف منشور من Firestore ─────────────────────────────────────────────
+  @override
+  Future<void> deletePost(String postId) async {
+    try {
+      await firestore
+          .collection(_collection)
+          .doc(postId)
+          .delete()
+          .timeout(_timeout);
+    } on FirebaseException catch (e) {
+      throw Exception(_mapFirebaseError(e));
+    } on Exception {
+      throw Exception('لا يوجد اتصال بالإنترنت، أعد المحاولة');
     }
   }
 

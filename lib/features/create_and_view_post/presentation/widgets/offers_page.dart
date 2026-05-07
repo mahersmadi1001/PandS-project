@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:p/core/shared/widgets/home_header.dart';
-import 'package:p/core/shared/widgets/post_card.dart';
+
+import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/core/shared/widgets/search_filter_widget.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';

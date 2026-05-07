@@ -2,21 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/theme/app_colors.dart';
 
-// class LogoImage extends StatelessWidget {
-//   LogoImage({super.key, required this.height, required this.width});
-//   double width;
-//   double height;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Image.asset(
-//       // ConstensApp.logo,
-//       fit: BoxFit.fill,
-//       width: width,
-//       height: height,
-//     );
-//   }
-// }
-
 class Tff extends StatelessWidget {
   TextEditingController? controller;
   ValueChanged<String>? onChanged;

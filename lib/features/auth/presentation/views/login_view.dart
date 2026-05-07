@@ -9,7 +9,8 @@ import 'package:p/features/auth/presentation/view_model/Register_bloc/register_b
 
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
 import 'package:p/features/auth/presentation/views/signup_view.dart';
-import 'package:p/core/shared/widgets/nav_bar.dart';
+import 'package:p/core/shared/nav_bar.dart';
+import 'package:p/core/shared/widgets/snack_bar_widget.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -46,15 +47,7 @@ class _LoginViewState extends State<LoginView> {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginError) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.errorRed,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
+         showErrorSnackBar(message: state.message, context: context);
         }
         if (state is LoginSuccess) {
           Navigator.pushReplacement(

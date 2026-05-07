@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void showErrorSnackBar({required String message, required BuildContext context}) {
+void showErrorSnackBar({
+  required String message,
+  required BuildContext context,
+}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Container(

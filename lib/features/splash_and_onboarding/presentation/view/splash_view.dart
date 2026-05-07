@@ -14,7 +14,7 @@ import 'package:p/features/auth/presentation/view_model/user_session/user_sessio
         UserUnAuth;
 import 'package:p/features/auth/presentation/views/login_view.dart';
 import 'package:p/features/splash_and_onboarding/presentation/view/onbording_pages.dart';
-import 'package:p/core/shared/widgets/nav_bar.dart';
+import 'package:p/core/shared/nav_bar.dart';
 
 class SplashView extends StatelessWidget {
   const SplashView({super.key});

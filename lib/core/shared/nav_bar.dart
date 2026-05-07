@@ -6,11 +6,14 @@ import 'package:p/core/config/di.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/create_and_view_post/domain/usecases/create_post_usecase.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
+import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
 import 'package:p/features/create_and_view_post/presentation/views/creat_order.dart';
-import 'package:p/view_temp/hesstory_screen.dart';
+
 import 'package:p/features/create_and_view_post/presentation/views/home_screen.dart';
-import 'package:p/view_temp/profile_screen.dart';
+import 'package:p/features/history/presentation/view/history_screen.dart';
+import 'package:p/features/profile/presentation/view/profile_screen.dart';
+import 'package:p/features/profile/presentation/view/profile_view_screen.dart';
 import 'package:p/view_temp/seeting_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -27,7 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     HomeScreen(),
     HistoryScreen(),
     CreateOrderScreen(),
-    ProfileScreen(),
+    ProfileViewScreen(),
     SettingsScreen(),
   ];
 
@@ -37,6 +40,7 @@ class _MainScreenState extends State<MainScreen> {
       create: (context) => CreatePostBloc(
         createPostUsecase: sl<CreatePostUsecase>(),
         getSavedSessionUsecase: sl<GetSavedSessionUsecase>(),
+        historyBloc: sl<HistoryBloc>(),
       ),
       child: Scaffold(
         body: _screens[currentIndex],

@@ -22,7 +22,7 @@ class UploadBox extends StatelessWidget {
         final pickedFile = await picker.pickImage(
           source: ImageSource.gallery,
           maxWidth: 800,
-          maxHeight: 600,
+          maxHeight: 600, 
           imageQuality: 80,
         );
 

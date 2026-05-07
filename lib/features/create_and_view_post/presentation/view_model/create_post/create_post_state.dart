@@ -37,7 +37,11 @@ class CreatePostSaving extends CreatePostState {
 
 /// تم النشر بنجاح
 class CreatePostSuccess extends CreatePostState {
-  const CreatePostSuccess();
+  final PostEntity post;
+  const CreatePostSuccess({required this.post});
+
+  @override
+  List<Object?> get props => [post];
 }
 
 /// فشل النشر

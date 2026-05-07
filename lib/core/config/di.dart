@@ -12,6 +12,21 @@ import 'package:p/features/create_and_view_post/presentation/view_model/create_p
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// ─── Profile imports ────────────────────────────────────────────────────────
+import 'package:p/features/profile/domain/repositories/profile_repository.dart';
+import 'package:p/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:p/features/profile/domain/usecases/update_profile_usecase.dart';
+import 'package:p/features/profile/domain/usecases/upload_profile_image_usecase.dart';
+import 'package:p/features/profile/domain/usecases/delete_profile_image_usecase.dart';
+import 'package:p/features/profile/domain/usecases/generate_profile_link_usecase.dart';
+import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
+
+// ─── History imports ────────────────────────────────────────────────
+import 'package:p/features/history/presentation/view_model/history_bloc.dart';
+
+// ─── Theme imports ──────────────────────────────────────────────────
+import 'package:p/core/presentation/bloc/theme_bloc.dart';
+
 // ─── Auth imports (لا تغيير) ──────────────────────────────────────────────────
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:p/features/auth/data/datasources/remote.dart';
@@ -68,8 +83,46 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetPostsUsecase(sl()));
 
   sl.registerFactory(
-    () => CreatePostBloc(createPostUsecase: sl(), getSavedSessionUsecase: sl()),
+    () => CreatePostBloc(
+      createPostUsecase: sl(),
+      getSavedSessionUsecase: sl(),
+      historyBloc: sl(),
+    ),
   );
 
   sl.registerFactory(() => GetPostsBloc(getPostsUsecase: sl()));
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PROFILE
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl());
+  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UploadProfileImageUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteProfileImageUseCase(sl()));
+  sl.registerLazySingleton(() => GenerateProfileLinkUseCase(sl()));
+
+  sl.registerFactory(
+    () => ProfileBloc(
+      getProfileUseCase: sl(),
+      updateProfileUseCase: sl(),
+      uploadProfileImageUseCase: sl(),
+      deleteProfileImageUseCase: sl(),
+      generateProfileLinkUseCase: sl(),
+    ),
+  );
+
+  // Theme
+  sl.registerFactory(() => ThemeBloc());
+
+  // History
+  sl.registerFactory(
+    () => HistoryBloc(
+      getPostsUsecase: sl(),
+      authLocalDataSource: sl(),
+      firestore: sl(),
+      postRepository: sl(),
+    ),
+  );
 }

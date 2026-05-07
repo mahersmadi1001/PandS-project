@@ -10,6 +10,10 @@ import 'package:p/features/auth/presentation/view_model/Register_bloc/register_b
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
 import 'package:p/features/auth/presentation/view_model/user_session/user_session_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
+import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
+import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
+import 'package:p/core/presentation/bloc/theme_bloc.dart';
+import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 
 import 'package:p/firebase_options.dart';
 
@@ -24,6 +28,7 @@ void main() async {
   );
   await Hive.initFlutter();
   await Hive.openBox('auth_box');
+  await Hive.openBox('theme_box');
   await init();
   runApp(const PandS());
 }
@@ -43,6 +48,9 @@ class PandS extends StatelessWidget {
           BlocProvider(create: (_) => sl<RegisterBloc>()),
           BlocProvider(create: (_) => sl<UserSessionBloc>()),
           BlocProvider(create: (_) => sl<CreatePostBloc>()),
+          BlocProvider(create: (_) => sl<ProfileBloc>()),
+          BlocProvider(create: (_) => sl<HistoryBloc>()),
+          BlocProvider(create: (_) => ThemeBloc()),
         ],
 
         child: MaterialAppClass(),
