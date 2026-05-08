@@ -25,7 +25,7 @@ import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 
 // ─── Theme imports ──────────────────────────────────────────────────
-import 'package:p/core/presentation/bloc/theme_bloc.dart';
+import 'package:p/core/presentation/view_model/theme_bloc.dart';
 
 // ─── Auth imports (لا تغيير) ──────────────────────────────────────────────────
 import 'package:p/features/auth/data/datasources/local.dart';
@@ -39,7 +39,7 @@ import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
 
 final di = GetIt.instance;
 
-Future<void> init() async {
+Future<void> setup() async {
   // ─── External ──────────────────────────────────────────────────────────────
   di.registerLazySingleton(() => FirebaseFirestore.instance);
   di.registerLazySingleton(() => Supabase.instance.client); // ← Supabase client

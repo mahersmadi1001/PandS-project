@@ -10,6 +10,7 @@ import 'package:p/core/string/list_addrees_string.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/filtter_buttom_sheet.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -21,8 +22,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String? _selectedProvince;
-  List<String> _selectedCategories = [];
+  String? selectedProvince;
+  List<String> selectedCategories = [];
   bool _showFilters = false;
 
   @override
@@ -41,9 +42,9 @@ class _SearchScreenState extends State<SearchScreen> {
   void _applyFilters() {
     context.read<GetPostsBloc>().add(
       FilterPosts(
-        province: _selectedProvince,
-        category: _selectedCategories.isNotEmpty
-            ? _selectedCategories.first
+        province: selectedProvince,
+        category: selectedCategories.isNotEmpty
+            ? selectedCategories.first
             : null,
       ),
     );
@@ -61,210 +62,12 @@ class _SearchScreenState extends State<SearchScreen> {
     _applyFilters();
   }
 
-  void _showFilterBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
-          String? tempProvince = _selectedProvince;
-          List<String> tempCategories = List.from(_selectedCategories);
-
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.75,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-            ),
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  padding: EdgeInsets.all(20.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey[200]!),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'خيارات الفلترة',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            tempProvince = null;
-                            tempCategories.clear();
-                          });
-                        },
-                        child: Text(
-                          'مسح الكل',
-                          style: TextStyle(
-                            color: AppColors.primaryBlue,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Content
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.all(20.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Province selection (single selection)
-                        Text(
-                          'المحافظة',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 12.h),
-                        Wrap(
-                          spacing: 8.w,
-                          runSpacing: 8.h,
-                          children: ConstensApp.syrianGovernorates.map((
-                            province,
-                          ) {
-                            final isSelected = tempProvince == province;
-                            return ChoiceChip(
-                              label: Text(
-                                province,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? AppColors.cardLight
-                                      : AppColors.primaryBlue,
-                                ),
-                              ),
-                              selected: isSelected,
-                              selectedColor: AppColors.primaryBlue,
-                              onSelected: (selected) {
-                                setState(() {
-                                  tempProvince = selected ? province : null;
-                                });
-                              },
-                            );
-                          }).toList(),
-                        ),
-
-                        SizedBox(height: 24.h),
-
-                        // Service categories (multiple selection)
-                        Text(
-                          'نوع الخدمة',
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 12.h),
-                        Wrap(
-                          spacing: 8.w,
-                          runSpacing: 8.h,
-                          children: ConstensApp.serviceCategories.map((
-                            category,
-                          ) {
-                            final isSelected = tempCategories.contains(
-                              category,
-                            );
-                            return ChoiceChip(
-                              label: Text(
-                                category,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? AppColors.cardLight
-                                      : AppColors.primaryBlue,
-                                ),
-                              ),
-                              selected: isSelected,
-                              selectedColor: AppColors.primaryBlue,
-                              onSelected: (selected) {
-                                setState(() {
-                                  if (selected) {
-                                    tempCategories = [category];
-                                  } else {
-                                    tempCategories.remove(category);
-                                  }
-                                });
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Apply button
-                Container(
-                  padding: EdgeInsets.all(20.w),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedProvince = tempProvince;
-                          _selectedCategories = tempCategories;
-                        });
-                        Navigator.pop(context);
-                        _applyFilters();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
-                      child: Text(
-                        'تطبيق الفلتر',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryBlue,
-        title: TitleAppBar(title: "البحث"),
+        title: TitleAppBar(title: "Research"),
       ),
       body: SafeArea(
         child: Column(
@@ -305,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(25.r)),
                       ),
                       hintStyle: TextStyle(fontSize: 14.sp),
-                      hintText: 'ابحث عن خدمات...',
+                      hintText: 'Search for services...',
                       prefixIcon: const Icon(
                         Icons.search,
                         color: AppColors.textSecondaryDark,
@@ -321,13 +124,18 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () => _showFilterBottomSheet(context),
+                          onPressed: () => filterButtomSheet(
+                            selectedProvince: selectedProvince,
+                            selectedCategories: selectedCategories,
+                            context: context,
+                            applyFilters: _applyFilters,
+                          ),
                           icon: const Icon(
                             Icons.filter_alt_outlined,
                             color: AppColors.lightBlue,
                           ),
                           label: Text(
-                            'الفلترة',
+                            'Filtering',
                             style: TextStyle(
                               color: AppColors.lightBlue,
                               fontSize: 14.sp,
@@ -342,16 +150,16 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      if (_selectedProvince != null ||
-                          _selectedCategories.isNotEmpty)
+                      if (selectedProvince != null ||
+                          selectedCategories.isNotEmpty)
                         SizedBox(width: 8.w),
-                      if (_selectedProvince != null ||
-                          _selectedCategories.isNotEmpty)
+                      if (selectedProvince != null ||
+                          selectedCategories.isNotEmpty)
                         IconButton(
                           onPressed: () {
                             setState(() {
-                              _selectedProvince = null;
-                              _selectedCategories.clear();
+                              selectedProvince = null;
+                              selectedCategories.clear();
                             });
                             _applyFilters();
                           },
@@ -392,7 +200,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'حدث خطأ في البحث',
+                            'An error occurred while searching',
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -413,7 +221,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             onPressed: () {
                               context.read<GetPostsBloc>().add(FetchPosts());
                             },
-                            child: Text('إعادة المحاولة'),
+                            child: Text('Retry'),
                           ),
                         ],
                       ),
@@ -431,7 +239,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'لا توجد نتائج للبحث',
+                              'No results found for your search',
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
@@ -440,7 +248,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'جرب تغيير كلمات البحث أو الفلاتر',
+                              'Try changing your search terms or filters',
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey[500],

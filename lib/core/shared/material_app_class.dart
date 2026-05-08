@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p/core/theme/app_theme.dart';
-import 'package:p/core/presentation/bloc/theme_bloc.dart';
+import 'package:p/core/presentation/view_model/theme_bloc.dart';
 import 'package:p/features/splash_and_onboarding/presentation/view/splash_view.dart';
 import 'package:p/core/shared/nav_bar.dart';
 

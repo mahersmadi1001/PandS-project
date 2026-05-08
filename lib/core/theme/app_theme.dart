@@ -18,17 +18,7 @@ class AppTheme {
       primary: AppColors.primaryBlue,
       surface: AppColors.cardLight,
     ),
-    // textTheme: TextTheme(
-    //   bodyLarge: TextStyle(
-    //     fontWeight: FontWeight.bold,
-    //     color: AppColors.textPrimaryLight,
-    //     fontSize: 17.sp,
-    //   ),
-    //   bodyMedium: TextStyle(
-    //     color: AppColors.textSecondaryLight,
-    //     fontSize: 17.sp,
-    //   ),
-    // ),
+
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -46,12 +36,6 @@ class AppTheme {
       primary: AppColors.primaryBlue,
       surface: AppColors.cardDark,
     ),
-    // textTheme: TextTheme(
-    //   bodyLarge: TextStyle(color: AppColors.textPrimaryDark, fontSize: 16.sp),
-    //   bodyMedium: TextStyle(
-    //     color: AppColors.textSecondaryDark,
-    //     fontSize: 14.sp,
-    //   ),
-    // ),
+   
   );
 }

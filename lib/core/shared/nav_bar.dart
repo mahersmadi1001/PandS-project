@@ -14,7 +14,7 @@ import 'package:p/features/create_and_view_post/presentation/views/home_screen.d
 import 'package:p/features/history/presentation/view/history_screen.dart';
 import 'package:p/features/profile/presentation/view/profile_screen.dart';
 import 'package:p/features/profile/presentation/view/profile_view_screen.dart';
-import 'package:p/view_temp/seeting_screen.dart';
+import 'package:p/core/presentation/view/seeting_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

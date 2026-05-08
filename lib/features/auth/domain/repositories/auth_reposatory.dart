@@ -13,4 +13,6 @@ abstract class AuthRepository {
   Future<Either<Failure, UserEntity?>> getSavedSession();
 
   Future<Either<Failure, void>> logout();
+
+  Future<Either<Failure, UserEntity?>> getUserById(String userId);
 }

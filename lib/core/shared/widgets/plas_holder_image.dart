@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class PlacHolder extends StatelessWidget {
-  const PlacHolder({super.key});
+class PlasHolder extends StatelessWidget {
+  const PlasHolder({super.key});
 
   @override
   Widget build(BuildContext context) {

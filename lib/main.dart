@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:p/core/config/di.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:p/core/shared/material_app_class.dart';
 import 'package:p/features/auth/presentation/view_model/Register_bloc/register_bloc.dart';
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
@@ -12,7 +13,7 @@ import 'package:p/features/auth/presentation/view_model/user_session/user_sessio
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
 
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
-import 'package:p/core/presentation/bloc/theme_bloc.dart';
+import 'package:p/core/presentation/view_model/theme_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 
 import 'package:p/firebase_options.dart';
@@ -26,11 +27,16 @@ void main() async {
     url: 'https://uscnnlokapfxozeuxdex.supabase.co',
     anonKey: 'sb_publishable_1sO_oZNgWOF0p4GZh5Mjyw_40Xk8PnK',
   );
+
   await Hive.initFlutter();
   await Hive.openBox('auth_box');
   await Hive.openBox('theme_box');
-  await init();
-  runApp(const PandS());
+  // await Hive.box('auth_box').clear();
+  await setup();
+  await SentryFlutter.init((options) {
+    options.dsn =
+        'https://beedc187cf3dd58e645bc196f45d8f35@o4511354663927808.ingest.de.sentry.io/4511354718388304';
+  }, appRunner: () => runApp(PandS()));
 }
 
 class PandS extends StatelessWidget {
