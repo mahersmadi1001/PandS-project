@@ -27,6 +27,10 @@ import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 // ─── Theme imports ──────────────────────────────────────────────────
 import 'package:p/core/presentation/view_model/theme_bloc.dart';
 
+// ─── Language imports ──────────────────────────────────────────────────
+import 'package:p/core/services/language_service.dart';
+import 'package:p/core/presentation/view_model/language_cubit.dart';
+
 // ─── Auth imports (لا تغيير) ──────────────────────────────────────────────────
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:p/features/auth/data/datasources/remote.dart';
@@ -115,6 +119,9 @@ Future<void> setup() async {
 
   // Theme
   di.registerFactory(() => ThemeBloc());
+
+  // Language
+  di.registerFactory(() => LanguageCubit());
 
   // History
   di.registerFactory(

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
@@ -30,19 +31,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تأكيد الحذف'),
-        content: const Text('هل أنت متأكد من حذف جميع السجل؟'),
+        title: Text('history_screen.confirm_delete'.tr()),
+        content: Text('history_screen.confirm_delete_all'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('لا'),
+            child: Text('history_screen.no'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               context.read<HistoryBloc>().add(const ClearHistory());
             },
-            child: const Text('نعم', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'history_screen.yes'.tr(),
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -53,19 +57,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تأكيد الحذف'),
-        content: const Text('هل أنت متأكد من حذف هذا المنشور؟'),
+        title: Text('history_screen.confirm_delete'.tr()),
+        content: Text('history_screen.confirm_delete_post'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('لا'),
+            child: Text('history_screen.no'.tr()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               context.read<HistoryBloc>().add(DeletePost(postId: postId));
             },
-            child: const Text('نعم', style: TextStyle(color: Colors.red)),
+            child: Text(
+              'history_screen.yes'.tr(),
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -77,7 +84,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryBlue,
-        title: TitleAppBar(title: "History"),
+        title: TitleAppBar(title: "history.history".tr()),
         actions: [
           BlocBuilder<HistoryBloc, HistoryState>(
             builder: (context, state) {
@@ -101,8 +108,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Requests",
+                  Text(
+                    "history_screen.requests".tr(),
                     style: TextStyle(
                       color: AppColors.primaryBlue,
                       fontSize: 18,
@@ -148,15 +155,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     : <PostEntity>[];
 
                 if (requestedPosts.isEmpty) {
-                  return const SizedBox(
+                  return SizedBox(
                     height: 200,
                     child: Center(
                       child: Text(
-                        'لا توجد طلبات حالياً',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
+                        'history_screen.no_requests_currently'.tr(),
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                     ),
                   );
@@ -203,8 +207,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Offers",
+                  Text(
+                    "history_screen.offers".tr(),
                     style: TextStyle(
                       color: AppColors.primaryBlue,
                       fontSize: 18,
@@ -254,7 +258,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     height: 200.h,
                     child: Center(
                       child: Text(
-                        'لا توجد عروض حالياً',
+                        'history_screen.no_offers_currently'.tr(),
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       ),
                     ),

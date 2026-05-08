@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/widgets/custom_text_field.dart';
 import 'package:p/core/shared/widgets/snack_bar_widget.dart';
 
@@ -78,7 +79,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     if (_currentUserId == null || _currentUserName == null) {
       showErrorSnackBar(
         context: context,
-        message: 'User data not loaded. Please try again.',
+        message: "create_post.user_data_not_loaded".tr(),
       );
       context.read<CreatePostBloc>().add(LoadUserData());
       return;
@@ -105,7 +106,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       listener: (context, state) {
         if (state is CreatePostSuccess) {
           showSuccessSnackBar(
-            message: "Post created successfully",
+            message: "create_post.post_created_successfully".tr(),
             context: context,
           );
           Navigator.pushReplacement(
@@ -129,7 +130,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           return Scaffold(
             appBar: AppBar(
               backgroundColor: AppColors.primaryBlue,
-              title: TitleAppBar(title: "Create Post"),
+              title: TitleAppBar(title: "post.create_post".tr()),
             ),
             body: isLoading
                 ? Center(child: CircularProgressIndicator())
@@ -140,9 +141,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       child: Column(
                         children: [
                           CustomTextField(
-                            label: "Title",
-                            hint:
-                                "Example: professional logo design is required",
+                            label: "create_post.title".tr(),
+                            hint: "create_post.title_hint".tr(),
                             controller: titleController,
                           ),
                           Row(
@@ -150,7 +150,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               Expanded(
                                 child: ButtonShowListCategory(
                                   selectedCategory:
-                                      selectedCategory ?? "Categories",
+                                      selectedCategory ??
+                                      "create_post.categories".tr(),
                                   onCategorySelected: (category) {
                                     setState(() {
                                       selectedCategory = category;
@@ -162,7 +163,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               Expanded(
                                 child: ButtonShowListAddrees(
                                   selectedProvince:
-                                      selectedProvince ?? "Address",
+                                      selectedProvince ??
+                                      "create_post.address".tr(),
                                   onProvinceSelected: (province) {
                                     setState(() {
                                       selectedProvince = province;
@@ -179,8 +181,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               Expanded(
                                 flex: 2,
                                 child: CustomTextField(
-                                  label: "Budget",
-                                  hint: "50\$",
+                                  label: "create_post.budget".tr(),
+                                  hint: "create_post.budget_hint".tr(),
                                   controller: budgetController,
                                   keyboardType: TextInputType.number,
                                 ),
@@ -194,7 +196,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Type Post",
+                                      "create_post.type_post".tr(),
                                       style: TextStyle(
                                         color: AppColors.primaryBlue,
                                         fontSize: 18.sp,
@@ -222,8 +224,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                             ],
                           ),
                           CustomTextField(
-                            label: "Detailed description",
-                            hint: "Explain what you need in detail...",
+                            label: "create_post.detailed_description".tr(),
+                            hint: "create_post.description_hint".tr(),
                             maxLines: 4,
                             controller: descriptionController,
                           ),
@@ -262,7 +264,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                                       ),
                                     )
                                   : Text(
-                                      "Create",
+                                      "create_post.create".tr(),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.sp,

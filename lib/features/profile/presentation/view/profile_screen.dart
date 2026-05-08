@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/profile/domain/entities/profile_entity.dart';
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -116,12 +118,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تم النسخ'),
-        content: Text('تم نسخ الرابط: $text'),
+        title: Text('profile.link_copied'.tr()),
+        content: Text('profile.link_copied'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
+            child: Text('general.ok'.tr()),
           ),
         ],
       ),
@@ -215,7 +217,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الملف الشخصي'),
+        title: TitleAppBar(title: 'profile.personal_profile'.tr()),
         backgroundColor: AppColors.primaryBlue,
         actions: [
           IconButton(
@@ -227,30 +229,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state is ProfileError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('profile.upload_failed'.tr())),
+            );
           }
           if (state is ProfileUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('تم تحديث الملف الشخصي')),
+              SnackBar(content: Text('profile.profile_updated'.tr())),
             );
           }
           if (state is ProfileImageUploaded) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('تم رفع الصورة')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('profile.image_uploaded'.tr())),
+            );
           }
           if (state is ProfileImageDeleted) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('تم حذف الصورة')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('profile.image_deleted'.tr())),
+            );
           }
           if (state is ProfileLinkGenerated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('تم إنشاء رابط الملف: ${state.profileLink}'),
-              ),
+              SnackBar(content: Text('profile.link_generated'.tr())),
             );
           }
         },
@@ -371,7 +371,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         // Name Field
                         Text(
-                          'الاسم',
+                          'profile.name'.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
@@ -381,7 +381,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextField(
                           controller: _nameController,
                           decoration: InputDecoration(
-                            hintText: 'أدخل اسمك',
+                            hintText: 'profile.enter_name'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
@@ -398,7 +398,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                         // Bio Field
                         Text(
-                          'النبذة التعريفية',
+                          'profile.bio'.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
@@ -409,7 +409,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           controller: _bioController,
                           maxLines: 3,
                           decoration: InputDecoration(
-                            hintText: 'أدخل نبذة تعريفية',
+                            hintText: 'profile.enter_bio'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
@@ -426,7 +426,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                         // Profession Field
                         Text(
-                          'المهنة',
+                          'profile.profession'.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
@@ -436,7 +436,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextField(
                           controller: _professionController,
                           decoration: InputDecoration(
-                            hintText: 'أدخل مهنتك',
+                            hintText: 'profile.enter_profession'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
@@ -453,7 +453,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                         // Skills Field
                         Text(
-                          'المهارات',
+                          'profile.skills'.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
@@ -463,7 +463,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextField(
                           controller: _skillsController,
                           decoration: InputDecoration(
-                            hintText: 'أدخل مهاراتك (مفصولة بفاصلة)',
+                            hintText: 'profile.enter_skills'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
@@ -480,7 +480,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                         // Profile Link Field
                         Text(
-                          'رابط الملف الشخصي',
+                          'profile.profile_link'.tr(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
@@ -490,7 +490,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         TextField(
                           controller: _profileLinkController,
                           decoration: InputDecoration(
-                            hintText: 'رابط الملف الشخصي',
+                            hintText: 'profile.profile_link'.tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
@@ -522,7 +522,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   foregroundColor: Colors.white,
                                   padding: EdgeInsets.symmetric(vertical: 12.h),
                                 ),
-                                child: const Text('اختر صورة'),
+                                child: Text('profile.choose_image'.tr()),
                               ),
                             ),
 
@@ -552,7 +552,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                 ),
                                           ),
                                         )
-                                      : const Text('رفع الصورة'),
+                                      : Text('profile.upload_image'.tr()),
                                 ),
                               ),
                           ],
@@ -564,32 +564,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: _generateProfileLink,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 12.h),
-                            ),
-                            child: const Text('إنشاء رابط الملف الشخصي'),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
 
-                        // Save Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _saveProfile,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primaryBlue,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 16.h),
-                              minimumSize: const Size(double.infinity, 50),
-                            ),
-                            child: const Text(
-                              'حفظ التغييرات',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                            child: ElevatedButton(
+                              onPressed: _saveProfile,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryBlue,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                minimumSize: const Size(double.infinity, 50),
+                              ),
+                              child: Text(
+                                'profile.save_changes'.tr(),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -602,7 +591,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             );
           }
 
-          return const Center(child: Text('الملف الشخصي غير موجود'));
+          return Center(child: Text('profile.profile_not_found'.tr()));
         },
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/config/di.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColors.primaryBlue,
           toolbarHeight: 35.h,
-          title: TitleAppBar(title: "Posts"),
+          title: TitleAppBar(title: "post.view_posts".tr()),
           actions: [
             IconButton(
               onPressed: () {
@@ -45,11 +46,11 @@ class HomeScreen extends StatelessWidget {
             labelStyle: TextStyle(color: AppColors.lightBlue),
             tabs: [
               Tab(
-                text: "Requsets",
+                text: "home_screen.requests".tr(),
                 icon: Icon(Icons.request_page, color: AppColors.lightBlue),
               ),
               Tab(
-                text: "Offers",
+                text: "home_screen.offers".tr(),
                 icon: Icon(
                   Icons.remember_me_rounded,
                   color: AppColors.lightBlue,

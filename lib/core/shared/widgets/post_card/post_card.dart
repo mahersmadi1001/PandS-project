@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/widgets/post_card/image_post.dart';
 import 'package:p/core/shared/widgets/post_card/post_card_fun.dart';
 import 'package:p/core/shared/widgets/post_card/post_user_info.dart';
@@ -113,12 +114,11 @@ class PostCard extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 10.h),
-            
+
                       PostUserInfo(post: post),
 
                       SizedBox(height: 12.h),
 
-               
                       Row(
                         children: [
                           Icon(
@@ -176,7 +176,7 @@ class PostCard extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                "Give a offer",
+                                "post_card.give_offer".tr(),
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
