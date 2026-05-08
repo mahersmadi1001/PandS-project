@@ -5,7 +5,8 @@ import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:p/features/auth/presentation/views/login_view.dart';
-import 'package:hive/hive.dart';
+import 'package:p/core/presentation/bloc/theme_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,38 +17,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final AuthLocalDataSource _authLocalDataSource = AuthLocalDataSourceImpl();
-  bool _isDarkMode = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadThemePreference();
-  }
-
-  Future<void> _loadThemePreference() async {
-    // Load theme preference from Hive
-    try {
-      final themeBox = await Hive.openBox('theme_box');
-      final isDark = themeBox.get('is_dark_mode') ?? false;
-      setState(() {
-        _isDarkMode = isDark;
-      });
-    } catch (e) {
-      print('Error loading theme preference: $e');
-    }
-  }
-
-  Future<void> _saveThemePreference(bool isDark) async {
-    try {
-      final themeBox = await Hive.openBox('theme_box');
-      await themeBox.put('is_dark_mode', isDark);
-      setState(() {
-        _isDarkMode = isDark;
-      });
-    } catch (e) {
-      print('Error saving theme preference: $e');
-    }
-  }
 
   Future<void> _logout() async {
     // Show confirmation dialog
@@ -102,55 +71,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryBlue,
-        title: TitleAppBar(title: "Settings"),
-      ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Padding(
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            children: [
-              // Theme Switch
-              SettingsTile(
-                title: "المظهر",
-                subtitle: _isDarkMode ? "الوضع الداكن" : "الوضع الفاتح",
-                icon: _isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                onTap: () {
-                  _saveThemePreference(!_isDarkMode);
-                  // Apply theme change
-                  // This would require BLoC implementation for full app theme change
-                },
-              ),
-              const SettingsTile(
-                title: "الإشعارات",
-                subtitle: "تخصيص تنبيهات الرسائل والطلبات",
-                icon: Icons.notifications_none,
-              ),
-              const SettingsTile(
-                title: "اللغة {Language}",
-                subtitle: "العربية",
-                icon: Icons.language,
-              ),
-              const SettingsTile(
-                title: "الأمان والخصوصية",
-                subtitle: "تغيير كلمة المرور وتأمين الحساب",
-                icon: Icons.lock_outline,
-              ),
-              const Spacer(),
-              SettingsTile(
-                title: "تسجيل الخروج",
-                subtitle: "",
-                icon: Icons.logout,
-                textColor: AppColors.errorRed,
-                onTap: _logout,
-              ),
-            ],
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is ThemeLoaded
+            ? themeState.isDarkMode
+            : false;
+
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.primaryBlue,
+            title: TitleAppBar(title: "Settings"),
           ),
-        ),
-      ),
+          body: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Padding(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                children: [
+                  // Theme Switch
+                  SettingsTile(
+                    title: "المظهر",
+                    subtitle: isDarkMode ? "الوضع الداكن" : "الوضع الفاتح",
+                    icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    onTap: () {
+                      context.read<ThemeBloc>().add(
+                        ThemeChanged(isDarkMode: !isDarkMode),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            !isDarkMode
+                                ? 'تم تفعيل الوضع الليلي'
+                                : 'تم تفعيل الوضع النهاري',
+                          ),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
+                  ),
+                  const SettingsTile(
+                    title: "الإشعارات",
+                    subtitle: "تخصيص تنبيهات الرسائل والطلبات",
+                    icon: Icons.notifications_none,
+                  ),
+                  const SettingsTile(
+                    title: "اللغة {Language}",
+                    subtitle: "العربية",
+                    icon: Icons.language,
+                  ),
+                  const SettingsTile(
+                    title: "الأمان والخصوصية",
+                    subtitle: "تغيير كلمة المرور وتأمين الحساب",
+                    icon: Icons.lock_outline,
+                  ),
+                  const Spacer(),
+                  SettingsTile(
+                    title: "تسجيل الخروج",
+                    subtitle: "",
+                    icon: Icons.logout,
+                    textColor: AppColors.errorRed,
+                    onTap: _logout,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -22,7 +22,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<UserSessionBloc>()..add(const UserSessionCheckStatus()),
+      create: (_) => di<UserSessionBloc>()..add(const UserSessionCheckStatus()),
       child: BlocListener<UserSessionBloc, UserSessionState>(
         listener: (context, state) {
           if (state is UserFirstTimeState) {

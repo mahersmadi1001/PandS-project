@@ -9,6 +9,7 @@ void main() {
   group('PostCard Widget Tests', () {
     // Test data
     final testPostWithImage = PostEntity(
+      title: "test",
       postId: 'test123',
       creatorId: 'user123',
       creatorName: 'Test User',
@@ -22,6 +23,7 @@ void main() {
     );
 
     final testPostWithoutImage = PostEntity(
+      title: "test",
       postId: 'test456',
       creatorId: 'user456',
       creatorName: 'Test User 2',
@@ -220,6 +222,7 @@ void main() {
     ) async {
       // Arrange
       final longDescriptionPost = PostEntity(
+        title: "test",
         postId: 'test789',
         creatorId: 'user789',
         creatorName: 'Test User 3',
@@ -261,6 +264,7 @@ void main() {
     ) async {
       // Arrange
       final emptyPricePost = PostEntity(
+        title: "test",
         postId: 'test000',
         creatorId: 'user000',
         creatorName: 'Test User 4',

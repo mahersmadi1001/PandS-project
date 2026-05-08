@@ -38,9 +38,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CreatePostBloc(
-        createPostUsecase: sl<CreatePostUsecase>(),
-        getSavedSessionUsecase: sl<GetSavedSessionUsecase>(),
-        historyBloc: sl<HistoryBloc>(),
+        createPostUsecase: di<CreatePostUsecase>(),
+        getSavedSessionUsecase: di<GetSavedSessionUsecase>(),
+        historyBloc: di<HistoryBloc>(),
       ),
       child: Scaffold(
         body: _screens[currentIndex],

@@ -15,6 +15,7 @@ class CreatePostSubmitted extends CreatePostEvent {
   final String creatorName;
   final PostType postType;
   final String category;
+  final String title;
   final String description;
   final String province;
   final String price;
@@ -25,6 +26,7 @@ class CreatePostSubmitted extends CreatePostEvent {
     required this.creatorName,
     required this.postType,
     required this.category,
+    required this.title,
     required this.description,
     required this.province,
     required this.price,
@@ -37,6 +39,7 @@ class CreatePostSubmitted extends CreatePostEvent {
     creatorName,
     postType,
     category,
+    title,
     description,
     province,
     price,

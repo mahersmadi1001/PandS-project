@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:p/core/shared/widgets/plas_holder_image.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 
@@ -60,11 +61,11 @@ class PostDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          post.description,
+                          post.title,
                           style: TextStyle(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.deepOrange,
+                            color: AppColors.primaryBlue,
                             height: 1.5,
                           ),
                         ),
@@ -80,7 +81,7 @@ class PostDetailsScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.r),
                         ),
                         child: Text(
-                          post.price,
+                          "${post.price} \$",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16.sp,
@@ -90,8 +91,10 @@ class PostDetailsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 20.h),
+                  _buildDetailSection("", [
+                    _buildDetailItem("Description", post.description),
+                  ]),
+                  SizedBox(height: 10.h),
 
                   // User info
                   Container(
@@ -201,7 +204,7 @@ class PostDetailsScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+              color: AppColors.primaryBlue,
             ),
           ),
           Expanded(
@@ -314,7 +317,10 @@ class PostDetailsScreen extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.primaryBlue,
+                    ),
                   ),
                   Text(
                     value,
@@ -331,18 +337,6 @@ class PostDetailsScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class PlacHolder extends StatelessWidget {
-  const PlacHolder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[300],
-      child: Icon(Icons.image, color: Colors.grey[600], size: 64.w),
     );
   }
 }

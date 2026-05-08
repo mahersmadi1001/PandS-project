@@ -8,6 +8,7 @@ class PostEntity extends Equatable {
   final String creatorName;
   final PostType postType;
   final String category;
+  final String title;
   final String description;
   final String province;
   final String price;
@@ -20,6 +21,7 @@ class PostEntity extends Equatable {
     required this.creatorName,
     required this.postType,
     required this.category,
+    required this.title,
     required this.description,
     required this.province,
     required this.price,
@@ -34,6 +36,7 @@ class PostEntity extends Equatable {
     creatorName,
     postType,
     category,
+    title,
     description,
     province,
     price,
@@ -49,6 +52,7 @@ class PostEntity extends Equatable {
       'creatorName': creatorName,
       'postType': postType.name,
       'category': category,
+      'title': title,
       'description': description,
       'province': province,
       'price': price,
@@ -57,7 +61,6 @@ class PostEntity extends Equatable {
     };
   }
 
- 
   factory PostEntity.fromMap(Map<String, dynamic> map) {
     return PostEntity(
       postId: map['postId'] ?? '',
@@ -68,6 +71,7 @@ class PostEntity extends Equatable {
         orElse: () => PostType.request,
       ),
       category: map['category'] ?? '',
+      title: map['title'] ?? '',
       description: map['description'] ?? '',
       province: map['province'] ?? '',
       price: map['price'] ?? '',

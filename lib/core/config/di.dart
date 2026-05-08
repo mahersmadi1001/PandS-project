@@ -37,92 +37,92 @@ import 'package:p/features/auth/domain/usecases/usecase_login.dart';
 import 'package:p/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
 
-final sl = GetIt.instance;
+final di = GetIt.instance;
 
 Future<void> init() async {
   // ─── External ──────────────────────────────────────────────────────────────
-  sl.registerLazySingleton(() => FirebaseFirestore.instance);
-  sl.registerLazySingleton(() => Supabase.instance.client); // ← Supabase client
+  di.registerLazySingleton(() => FirebaseFirestore.instance);
+  di.registerLazySingleton(() => Supabase.instance.client); // ← Supabase client
 
   // ═══════════════════════════════════════════════════════════════════════════
   // AUTH
   // ═══════════════════════════════════════════════════════════════════════════
 
-  sl.registerLazySingleton<RemoteDataSources>(
-    () => RemoteDataSources(firestore: sl()),
+  di.registerLazySingleton<RemoteDataSources>(
+    () => RemoteDataSources(firestore: di()),
   );
-  sl.registerLazySingleton<AuthLocalDataSource>(
+  di.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(),
   );
-  sl.registerLazySingleton<AuthRepository>(
-    () => RepositoriesImplement(remoteDataSource: sl(), localDataSource: sl()),
+  di.registerLazySingleton<AuthRepository>(
+    () => RepositoriesImplement(remoteDataSource: di(), localDataSource: di()),
   );
-  sl.registerLazySingleton(() => SginupUsecase(repository: sl()));
-  sl.registerLazySingleton(() => LoginUsecase(repository: sl()));
-  sl.registerLazySingleton(() => LogoutUsecase(sl()));
-  sl.registerLazySingleton(() => GetSavedSessionUsecase(sl()));
+  di.registerLazySingleton(() => SginupUsecase(repository: di()));
+  di.registerLazySingleton(() => LoginUsecase(repository: di()));
+  di.registerLazySingleton(() => LogoutUsecase(di()));
+  di.registerLazySingleton(() => GetSavedSessionUsecase(di()));
 
-  sl.registerFactory(() => RegisterBloc(sginUseCase: sl()));
-  sl.registerFactory(() => LoginBloc(loginUsecase: sl()));
-  sl.registerFactory(() => UserSessionBloc(localDataSource: sl()));
+  di.registerFactory(() => RegisterBloc(sginUseCase: di()));
+  di.registerFactory(() => LoginBloc(loginUsecase: di()));
+  di.registerFactory(() => UserSessionBloc(localDataSource: di()));
 
   // ═══════════════════════════════════════════════════════════════════════════
   // POST
   // ═══════════════════════════════════════════════════════════════════════════
 
-  sl.registerLazySingleton<PostRemoteDataSource>(
+  di.registerLazySingleton<PostRemoteDataSource>(
     () => PostRemoteDataSourceImpl(
-      firestore: sl(),
-      supabase: sl(), // ← Supabase client من الـ External
+      firestore: di(),
+      supabase: di(), // ← Supabase client من الـ External
     ),
   );
-  sl.registerLazySingleton<PostRepository>(
-    () => PostRepositoryImpl(remote: sl()),
+  di.registerLazySingleton<PostRepository>(
+    () => PostRepositoryImpl(remote: di()),
   );
-  sl.registerLazySingleton(() => CreatePostUsecase(sl()));
-  sl.registerLazySingleton(() => GetPostsUsecase(sl()));
+  di.registerLazySingleton(() => CreatePostUsecase(di()));
+  di.registerLazySingleton(() => GetPostsUsecase(di()));
 
-  sl.registerFactory(
+  di.registerFactory(
     () => CreatePostBloc(
-      createPostUsecase: sl(),
-      getSavedSessionUsecase: sl(),
-      historyBloc: sl(),
+      createPostUsecase: di(),
+      getSavedSessionUsecase: di(),
+      historyBloc: di(),
     ),
   );
 
-  sl.registerFactory(() => GetPostsBloc(getPostsUsecase: sl()));
+  di.registerFactory(() => GetPostsBloc(getPostsUsecase: di()));
 
   // ═══════════════════════════════════════════════════════════════════════════
   // PROFILE
   // ═══════════════════════════════════════════════════════════════════════════
 
-  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl());
-  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateProfileUseCase(sl()));
-  sl.registerLazySingleton(() => UploadProfileImageUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteProfileImageUseCase(sl()));
-  sl.registerLazySingleton(() => GenerateProfileLinkUseCase(sl()));
+  di.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl());
+  di.registerLazySingleton(() => GetProfileUseCase(di()));
+  di.registerLazySingleton(() => UpdateProfileUseCase(di()));
+  di.registerLazySingleton(() => UploadProfileImageUseCase(di()));
+  di.registerLazySingleton(() => DeleteProfileImageUseCase(di()));
+  di.registerLazySingleton(() => GenerateProfileLinkUseCase(di()));
 
-  sl.registerFactory(
+  di.registerFactory(
     () => ProfileBloc(
-      getProfileUseCase: sl(),
-      updateProfileUseCase: sl(),
-      uploadProfileImageUseCase: sl(),
-      deleteProfileImageUseCase: sl(),
-      generateProfileLinkUseCase: sl(),
+      getProfileUseCase: di(),
+      updateProfileUseCase: di(),
+      uploadProfileImageUseCase: di(),
+      deleteProfileImageUseCase: di(),
+      generateProfileLinkUseCase: di(),
     ),
   );
 
   // Theme
-  sl.registerFactory(() => ThemeBloc());
+  di.registerFactory(() => ThemeBloc());
 
   // History
-  sl.registerFactory(
+  di.registerFactory(
     () => HistoryBloc(
-      getPostsUsecase: sl(),
-      authLocalDataSource: sl(),
-      firestore: sl(),
-      postRepository: sl(),
+      getPostsUsecase: di(),
+      authLocalDataSource: di(),
+      firestore: di(),
+      postRepository: di(),
     ),
   );
 }

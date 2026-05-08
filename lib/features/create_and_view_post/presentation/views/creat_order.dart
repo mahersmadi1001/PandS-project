@@ -90,6 +90,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         creatorName: _currentUserName!,
         postType: _selectedPostType,
         category: selectedCategory!,
+        title: titleController.text.trim(),
         description: descriptionController.text.trim(),
         province: selectedProvince!,
         price: budgetController.text.trim(),

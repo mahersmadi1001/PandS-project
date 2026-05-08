@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:p/core/shared/widgets/post_card/post_card.dart';
-import 'package:p/core/shared/widgets/search_filter_widget.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
@@ -16,32 +15,11 @@ class OffersPage extends StatefulWidget {
 }
 
 class _OffersPageState extends State<OffersPage> {
-  String _searchQuery = '';
-  String? _selectedProvince;
-  List<String> _selectedCategories = [];
-
   @override
   void initState() {
     super.initState();
 
     context.read<GetPostsBloc>().add(FetchPosts(postType: PostType.offer));
-  }
-
-  void _applyFilters() {
-    context.read<GetPostsBloc>().add(
-      FilterPosts(
-        postType: PostType.offer,
-        province: _selectedProvince,
-        category: _selectedCategories.isNotEmpty
-            ? _selectedCategories.first
-            : null,
-      ),
-    );
-
-    // Apply search if there's a search query
-    if (_searchQuery.isNotEmpty) {
-      context.read<GetPostsBloc>().add(SearchPosts(searchQuery: _searchQuery));
-    }
   }
 
   @override
@@ -51,28 +29,6 @@ class _OffersPageState extends State<OffersPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchFilterWidget(
-              selectedProvince: _selectedProvince,
-              selectedCategories: _selectedCategories,
-              onSearchChanged: (value) {
-                _searchQuery = value;
-                _applyFilters();
-              },
-              onProvinceSelected: (province) {
-                setState(() {
-                  _selectedProvince = province;
-                });
-                _applyFilters();
-              },
-              onCategoriesSelected: (categories) {
-                setState(() {
-                  _selectedCategories = categories;
-                });
-                _applyFilters();
-              },
-              onFilterTap: () {},
-            ),
-
             // Posts list
             Expanded(
               child: BlocBuilder<GetPostsBloc, GetPostsState>(

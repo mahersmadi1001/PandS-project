@@ -8,6 +8,7 @@ import 'package:p/features/create_and_view_post/presentation/view_model/get_post
 
 import 'package:p/features/create_and_view_post/presentation/widgets/requests_page.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/offers_page.dart';
+import 'package:p/features/create_and_view_post/presentation/views/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,6 +22,22 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: AppColors.primaryBlue,
           toolbarHeight: 35.h,
           title: TitleAppBar(title: "Posts"),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => di<GetPostsBloc>(),
+                      child: const SearchScreen(),
+                    ),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.search, color: AppColors.lightBlue),
+            ),
+          ],
           bottom: TabBar(
             dividerColor: AppColors.textSecondaryLight,
             indicatorPadding: EdgeInsets.all(8.sp),
@@ -44,12 +61,12 @@ class HomeScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             BlocProvider(
-              create: (context) => sl<GetPostsBloc>(),
+              create: (context) => di<GetPostsBloc>(),
               child: const RequsetsPage(),
             ),
 
             BlocProvider(
-              create: (context) => sl<GetPostsBloc>(),
+              create: (context) => di<GetPostsBloc>(),
               child: const OffersPage(),
             ),
           ],

@@ -7,6 +7,7 @@ class PostModel extends PostEntity {
     required super.creatorName,
     required super.postType,
     required super.category,
+    required super.title,
     required super.description,
     required super.province,
     required super.price,
@@ -18,32 +19,34 @@ class PostModel extends PostEntity {
   // الحقول مطابقة لما يظهر في Firebase Console
   Map<String, dynamic> toMap() {
     return {
-      'post_id':      postId,
-      'creator_id':   creatorId,
+      'post_id': postId,
+      'creator_id': creatorId,
       'creator_name': creatorName,
-      'post_type':    postType.name,   // 'request' | 'offer'
-      'category':     category,
-      'description':  description,
-      'province':     province,
-      'price':        price,
-      'image':        image,           // Supabase public URL
-      'created_at':   createdAt,
+      'post_type': postType.name, // 'request' | 'offer'
+      'category': category,
+      'title': title,
+      'description': description,
+      'province': province,
+      'price': price,
+      'image': image, // Supabase public URL
+      'created_at': createdAt,
     };
   }
 
   // ── تحويل من Firestore إلى Model ────────────────────────────────────────────
   factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
-      postId:      map['post_id']      as String? ?? '',
-      creatorId:   map['creator_id']   as String? ?? '',
+      postId: map['post_id'] as String? ?? '',
+      creatorId: map['creator_id'] as String? ?? '',
       creatorName: map['creator_name'] as String? ?? '',
-      postType:    _parseType(map['post_type']),
-      category:    map['category']     as String? ?? '',
-      description: map['description']  as String? ?? '',
-      province:    map['province']     as String? ?? '',
-      price:       map['price']        as String? ?? '',
-      image:       map['image']        as String? ?? '',
-      createdAt:   map['created_at']   as String? ?? '',
+      postType: _parseType(map['post_type']),
+      category: map['category'] as String? ?? '',
+      title: map['title'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      province: map['province'] as String? ?? '',
+      price: map['price'] as String? ?? '',
+      image: map['image'] as String? ?? '',
+      createdAt: map['created_at'] as String? ?? '',
     );
   }
 
@@ -53,18 +56,19 @@ class PostModel extends PostEntity {
   }
 
   // ── نسخ مع تعديل (مفيد عند رفع الصورة وتحديث الـ URL) ───────────────────────
-  PostModel copyWith({ String? image }) {
+  PostModel copyWith({String? image}) {
     return PostModel(
-      postId:      postId,
-      creatorId:   creatorId,
+      postId: postId,
+      creatorId: creatorId,
       creatorName: creatorName,
-      postType:    postType,
-      category:    category,
+      postType: postType,
+      category: category,
+      title: title,
       description: description,
-      province:    province,
-      price:       price,
-      image:       image ?? this.image,
-      createdAt:   createdAt,
+      province: province,
+      price: price,
+      image: image ?? this.image,
+      createdAt: createdAt,
     );
   }
 }

@@ -46,6 +46,7 @@ class PostRepositoryImpl implements PostRepository {
         creatorName: post.creatorName,
         postType: post.postType,
         category: post.category,
+        title: post.title,
         description: post.description,
         province: post.province,
         price: post.price,

@@ -10,7 +10,7 @@ import 'package:p/features/auth/presentation/view_model/Register_bloc/register_b
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
 import 'package:p/features/auth/presentation/view_model/user_session/user_session_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
-import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
+
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:p/core/presentation/bloc/theme_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
@@ -44,12 +44,12 @@ class PandS extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => sl<LoginBloc>()),
-          BlocProvider(create: (_) => sl<RegisterBloc>()),
-          BlocProvider(create: (_) => sl<UserSessionBloc>()),
-          BlocProvider(create: (_) => sl<CreatePostBloc>()),
-          BlocProvider(create: (_) => sl<ProfileBloc>()),
-          BlocProvider(create: (_) => sl<HistoryBloc>()),
+          BlocProvider(create: (_) => di<LoginBloc>()),
+          BlocProvider(create: (_) => di<RegisterBloc>()),
+          BlocProvider(create: (_) => di<UserSessionBloc>()),
+          BlocProvider(create: (_) => di<CreatePostBloc>()),
+          BlocProvider(create: (_) => di<ProfileBloc>()),
+          BlocProvider(create: (_) => di<HistoryBloc>()),
           BlocProvider(create: (_) => ThemeBloc()),
         ],
 

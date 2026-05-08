@@ -22,6 +22,7 @@ void main() {
       test('should save post successfully when Hive operations work', () async {
         // Arrange
         final testPost = PostEntity(
+          title: "test",
           postId: 'test123',
           creatorId: 'user123',
           creatorName: 'Test User',
@@ -75,6 +76,7 @@ void main() {
       test('should handle Hive exception gracefully', () async {
         // Arrange
         final testPost = PostEntity(
+          title: "test",
           postId: 'test123',
           creatorId: 'user123',
           creatorName: 'Test User',
@@ -100,6 +102,7 @@ void main() {
       test('should limit history to 50 posts', () async {
         // Arrange
         final testPost = PostEntity(
+          title: "test",
           postId: 'test123',
           creatorId: 'user123',
           creatorName: 'Test User',

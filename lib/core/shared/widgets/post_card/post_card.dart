@@ -23,7 +23,7 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      margin: EdgeInsets.symmetric(vertical: 10.h),
       elevation: 10,
       shadowColor: AppColors.primaryBlue.withAlpha(80),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
@@ -54,40 +54,42 @@ class PostCard extends StatelessWidget {
                   ImagePost(post: post)
                 else
                   Container(
+                    height: 120.h,
                     width: double.infinity,
-                    height: 200.h,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: Colors.grey[300],
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(16.r),
                       ),
                     ),
-                    child: Icon(Icons.image, color: Colors.grey[400], size: 48.w),
+                    child: Icon(
+                      Icons.image,
+                      color: Colors.grey[600],
+                      size: 64.w,
+                    ),
                   ),
 
-                // Content below image
                 Padding(
-                  padding: EdgeInsets.all(16.w),
+                  padding: EdgeInsets.all(8.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title and price
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: Text(
-                              post.description,
+                              post.title,
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                color: AppColors.primaryBlue,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(width: 12.w),
+
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 12.w,
@@ -98,7 +100,8 @@ class PostCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Text(
-                              post.price,
+                              "${post.price} \$",
+
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.bold,
@@ -108,63 +111,75 @@ class PostCard extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      SizedBox(height: 12.h),
-
+                      SizedBox(height: 10.h),
+                      // User info and post type indicator
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 20.r,
-                            backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
-                            child: Icon(
-                              Icons.person,
-                              color: AppColors.primaryBlue,
-                              size: 20.w,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            flex: 3,
+                            child: Row(
                               children: [
-                                Text(
-                                  post.creatorName,
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
+                                CircleAvatar(
+                                  radius: 20.r,
+                                  backgroundColor: AppColors.primaryBlue
+                                      .withAlpha(20),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: AppColors.primaryBlue,
+                                    size: 20.w,
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
                                 ),
-                                Text(
-                                  post.category,
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: Colors.grey[600],
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        post.creatorName,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      Text(
+                                        post.category,
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Colors.grey[600],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ],
                                   ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
                                 ),
                               ],
                             ),
                           ),
                           // Post type indicator
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: PostCardFun.getPostTypeColor(post: post),
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Text(
-                              PostCardFun.getPostTypeText(post: post),
-                              style: TextStyle(
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                          Flexible(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: PostCardFun.getPostTypeColor(post: post),
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Text(
+                                PostCardFun.getPostTypeText(post: post),
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
@@ -193,25 +208,30 @@ class PostCard extends StatelessWidget {
                               maxLines: 1,
                             ),
                           ),
-                          SizedBox(width: 16.w),
+                          SizedBox(width: 8.w),
                           Icon(
                             Icons.access_time,
                             color: Colors.grey[600],
                             size: 16.w,
                           ),
                           SizedBox(width: 4.w),
-                          Text(
-                            PostCardFun.formatTime(createdAt: post.createdAt),
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.grey[600],
+                          Flexible(
+                            child: Text(
+                              PostCardFun.formatTime(createdAt: post.createdAt),
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.grey[600],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ),
                         ],
                       ),
 
                       // Action button for requests
-                      if (post.postType == PostType.request && onOfferTap != null)
+                      if (post.postType == PostType.request &&
+                          onOfferTap != null)
                         Padding(
                           padding: EdgeInsets.only(top: 12.h),
                           child: SizedBox(
@@ -263,10 +283,7 @@ class PostCard extends StatelessWidget {
                   icon: Icon(Icons.delete, color: Colors.white, size: 20.w),
                   onPressed: onDelete,
                   padding: EdgeInsets.all(4.w),
-                  constraints: BoxConstraints(
-                    minWidth: 32.w,
-                    minHeight: 32.w,
-                  ),
+                  constraints: BoxConstraints(minWidth: 32.w, minHeight: 32.w),
                 ),
               ),
             ),

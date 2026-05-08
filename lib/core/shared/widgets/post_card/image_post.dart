@@ -14,18 +14,10 @@ class ImagePost extends StatelessWidget {
       child: Image.network(
         post.image,
         width: double.infinity,
-        height: 160.h,
+        height: 120.h,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return Container(
-            width: double.infinity,
-            height: 200.h,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
-            ),
-            child: Icon(Icons.image, color: Colors.grey[400], size: 48.w),
-          );
+          return Placeholder();
         },
       ),
     );

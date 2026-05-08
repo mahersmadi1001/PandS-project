@@ -163,27 +163,39 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 }
 
                 return SizedBox(
-                  height: 230.h,
-                  child: ListView.builder(
-                    itemCount: requestedPosts.length,
-                    itemBuilder: (context, index) {
-                      final post = requestedPosts[index];
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.8,
+                      height: 290.h,
+                      enableInfiniteScroll: false,
+                    ),
+                    items: requestedPosts.map((post) {
                       return PostCard(
                         post: post,
                         onTap: () {
-                          // Navigate to post details
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PostDetailsScreen(
+                                  isRequest: true,
+                                  post: post,
+                                );
+                              },
+                            ),
+                          );
                         },
                         onOfferTap: null,
                         onDelete: () =>
                             _showDeleteConfirmation(context, post.postId),
                       );
-                    },
+                    }).toList(),
                   ),
                 );
               },
             ),
-
-            const SizedBox(height: 20),
 
             // Offers section
             Padding(
@@ -250,13 +262,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 }
 
                 return SizedBox(
-                  height: 200.h,
                   child: CarouselSlider(
                     options: CarouselOptions(
                       autoPlay: true,
                       enlargeCenterPage: true,
                       viewportFraction: 0.8,
-                      aspectRatio: 16 / 9,
+                      height: 290.h,
                       enableInfiniteScroll: false,
                     ),
                     items: offeredPosts.map((post) {
