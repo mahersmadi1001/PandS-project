@@ -41,17 +41,21 @@ class _SignUpViewState extends State<SignUpView> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<RegisterBloc>().add(
-      RegisterSubmitted(
-        user: UserEntity(
-          uId: const Uuid().v4(),
-          fullName: _fullNameCtrl.text.trim(),
-          email: _emailCtrl.text.trim(),
-          phone: _phoneCtrl.text.trim(),
-          password: _passwordCtrl.text,
+
+    // التحقق من أن الـ Bloc لم يتم إغلاقه قبل إضافة event
+    if (!context.read<RegisterBloc>().isClosed) {
+      context.read<RegisterBloc>().add(
+        RegisterSubmitted(
+          user: UserEntity(
+            uId: const Uuid().v4(),
+            fullName: _fullNameCtrl.text.trim(),
+            email: _emailCtrl.text.trim(),
+            phone: _phoneCtrl.text.trim(),
+            password: _passwordCtrl.text,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override

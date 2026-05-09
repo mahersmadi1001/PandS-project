@@ -1,24 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:p/features/auth/data/models/user_model.dart';
 import 'package:p/features/auth/domain/entities/user.dart';
 
 class RemoteDataSources {
   final FirebaseFirestore firestore;
+  final InternetConnectionChecker connectionChecker;
   static const String _collection = 'users';
-
 
   static const Duration _timeout = Duration(seconds: 10);
 
-  RemoteDataSources({required this.firestore});
+  RemoteDataSources({required this.firestore, required this.connectionChecker});
 
   Future<UserEntity> register({required UserModel user}) async {
     try {
+      // Check internet connection first
+      final hasConnection = await connectionChecker.hasConnection;
+      if (!hasConnection) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+
       final existing = await firestore
           .collection(_collection)
           .where('email', isEqualTo: user.email)
           .limit(1)
           .get()
-          .timeout(_timeout); 
+          .timeout(_timeout);
 
       if (existing.docs.isNotEmpty) {
         throw Exception('هذا البريد الإلكتروني مسجل مسبقاً');
@@ -33,9 +42,16 @@ class RemoteDataSources {
       return user;
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
-    } on Exception {
-  
-      throw Exception('لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة');
+    } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('Network') ||
+          e.toString().contains('Internet')) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+      throw Exception('حدث خطأ: ${e.toString()}');
     }
   }
 
@@ -44,6 +60,14 @@ class RemoteDataSources {
     required String password,
   }) async {
     try {
+      // Check internet connection first
+      final hasConnection = await connectionChecker.hasConnection;
+      if (!hasConnection) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+
       final result = await firestore
           .collection(_collection)
           .where('email', isEqualTo: email)
@@ -64,13 +88,29 @@ class RemoteDataSources {
       return UserModel.fromMap(data);
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
-    } on Exception {
-      throw Exception('لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة');
+    } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('Network') ||
+          e.toString().contains('Internet')) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+      throw Exception('حدث خطأ: ${e.toString()}');
     }
   }
 
   Future<UserEntity?> getUserById(String uId) async {
     try {
+      // Check internet connection first
+      final hasConnection = await connectionChecker.hasConnection;
+      if (!hasConnection) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+
       final doc = await firestore
           .collection(_collection)
           .doc(uId)
@@ -81,8 +121,16 @@ class RemoteDataSources {
       return UserModel.fromMap(doc.data()!);
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
-    } on Exception {
-      throw Exception('لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة');
+    } catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Connection refused') ||
+          e.toString().contains('Network') ||
+          e.toString().contains('Internet')) {
+        throw Exception(
+          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
+        );
+      }
+      throw Exception('حدث خطأ: ${e.toString()}');
     }
   }
 

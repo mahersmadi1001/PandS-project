@@ -11,7 +11,7 @@ import 'package:p/core/string/list_addrees_string.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/filtter_buttom_sheet.dart';
+
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -122,66 +122,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                   SizedBox(height: 12.h),
-
-                  // // Filter Button
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: ElevatedButton.icon(
-                  //         onPressed: () => filterButtomSheet(
-                  //           selectedProvince: selectedProvince,
-                  //           selectedCategories: selectedCategories,
-                  //           context: context,
-                  //           applyFilters: _applyFilters,
-                  //         ),
-                  //         icon: const Icon(
-                  //           Icons.filter_alt_outlined,
-                  //           color: AppColors.lightBlue,
-                  //         ),
-                  //         label: Text(
-                  //           'Filtering',
-                  //           style: TextStyle(
-                  //             color: AppColors.lightBlue,
-                  //             fontSize: 14.sp,
-                  //             fontWeight: FontWeight.w600,
-                  //           ),
-                  //         ),
-                  //         style: ElevatedButton.styleFrom(
-                  //           backgroundColor: AppColors.primaryBlue,
-                  //           shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(12.r),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     if (selectedProvince != null ||
-                  //         selectedCategories.isNotEmpty)
-                  //       SizedBox(width: 8.w),
-                  //     if (selectedProvince != null ||
-                  //         selectedCategories.isNotEmpty)
-                  //       IconButton(
-                  //         onPressed: () {
-                  //           setState(() {
-                  //             selectedProvince = null;
-                  //             selectedCategories.clear();
-                  //           });
-                  //           _applyFilters();
-                  //         },
-                  //         icon: const Icon(
-                  //           Icons.clear_all,
-                  //           color: AppColors.primaryBlue,
-                  //         ),
-                  //         style: IconButton.styleFrom(
-                  //           backgroundColor: AppColors.primaryBlue.withOpacity(
-                  //             0.1,
-                  //           ),
-                  //           shape: RoundedRectangleBorder(
-                  //             borderRadius: BorderRadius.circular(12.r),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),

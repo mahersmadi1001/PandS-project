@@ -50,6 +50,7 @@ class PostCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: Directionality.of(context),
               children: [
                 // Post image at top
                 if (post.image.isNotEmpty)
@@ -75,9 +76,11 @@ class PostCard extends StatelessWidget {
                   padding: EdgeInsets.all(8.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    textDirection: Directionality.of(context),
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        textDirection: Directionality.of(context),
                         children: [
                           Expanded(
                             child: Text(
@@ -120,6 +123,7 @@ class PostCard extends StatelessWidget {
                       SizedBox(height: 12.h),
 
                       Row(
+                        textDirection: Directionality.of(context),
                         children: [
                           Icon(
                             Icons.location_on,

@@ -21,6 +21,7 @@
     "settings": "Settings",
     "profile": "Profile",
     "home": "Home",
+    "not_specified": "Not specified",
     "back": "Back"
   },
   "auth": {
@@ -66,10 +67,14 @@
     "enter_skills": "Enter your skills (comma separated)",
     "profile_not_found": "Profile not found",
     "generate_profile_link": "Generate Profile Link",
-    "upload_failed": "Upload failed"
+    "upload_failed": "Upload failed",
+    "image_upload_error": "Image upload failed: {error}",
+    "phone": "Phone",
+    "no_bio": "No bio",
+    "no_skills": "No skills"
   },
   "post": {
-    "create_post": "Create Post",
+    "create_post": "Create",
     "title": "Title",
     "content": "Content",
     "create": "Create",

@@ -172,7 +172,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       autoPlay: true,
                       enlargeCenterPage: true,
                       viewportFraction: 0.8,
-                      height: 290.h,
+                      height: 310.h,
                       enableInfiniteScroll: false,
                     ),
                     items: requestedPosts.map((post) {
@@ -271,7 +271,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       autoPlay: true,
                       enlargeCenterPage: true,
                       viewportFraction: 0.8,
-                      height: 290.h,
+                      height: 310.h,
                       enableInfiniteScroll: false,
                     ),
                     items: offeredPosts.map((post) {

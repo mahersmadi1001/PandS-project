@@ -9,7 +9,7 @@ import 'package:p/features/create_and_view_post/domain/usecases/create_post_usec
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
-import 'package:p/features/create_and_view_post/presentation/views/creat_order.dart';
+import 'package:p/features/create_and_view_post/presentation/views/creat_post.dart';
 
 import 'package:p/features/create_and_view_post/presentation/views/home_screen.dart';
 import 'package:p/features/history/presentation/view/history_screen.dart';

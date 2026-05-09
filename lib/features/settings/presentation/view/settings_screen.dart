@@ -43,20 +43,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (confirmed == true) {
       try {
-        // Get current user ID
         final userId = _authLocalDataSource.getSession();
 
         if (userId != null) {
-          // Delete user session from Hive
           await _authLocalDataSource.clearSession();
-
-          // Optional: Delete user document from Firestore
-          // await _firestore.collection('users').doc(userId).delete();
 
           print('User logged out successfully');
         }
 
-        // Navigate to login screen
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const LoginView()),
@@ -99,7 +93,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: EdgeInsets.all(20.w),
                   child: Column(
                     children: [
-                      // Language Switch
                       SettingsTile(
                         title: "settings.language".tr(),
                         subtitle: currentLanguage == 'ar'
@@ -111,7 +104,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
 
-                      // Theme Switch
                       SettingsTile(
                         title: "settings.theme".tr(),
                         subtitle: isDarkMode

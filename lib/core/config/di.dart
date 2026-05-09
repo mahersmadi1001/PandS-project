@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:p/features/auth/presentation/view_model/Register_bloc/register_bloc.dart';
 import 'package:p/features/auth/presentation/view_model/login_bloc/login_bloc.dart';
 import 'package:p/features/auth/presentation/view_model/user_session/user_session_bloc.dart';
@@ -47,13 +48,14 @@ Future<void> setup() async {
   // ─── External ──────────────────────────────────────────────────────────────
   di.registerLazySingleton(() => FirebaseFirestore.instance);
   di.registerLazySingleton(() => Supabase.instance.client); // ← Supabase client
+  di.registerLazySingleton(() => InternetConnectionChecker.instance);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // AUTH
   // ═══════════════════════════════════════════════════════════════════════════
 
   di.registerLazySingleton<RemoteDataSources>(
-    () => RemoteDataSources(firestore: di()),
+    () => RemoteDataSources(firestore: di(), connectionChecker: di()),
   );
   di.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(),
@@ -66,7 +68,7 @@ Future<void> setup() async {
   di.registerLazySingleton(() => LogoutUsecase(di()));
   di.registerLazySingleton(() => GetSavedSessionUsecase(di()));
 
-  di.registerFactory(() => RegisterBloc(sginUseCase: di()));
+  di.registerLazySingleton(() => RegisterBloc(sginUseCase: di()));
   di.registerFactory(() => LoginBloc(loginUsecase: di()));
   di.registerFactory(() => UserSessionBloc(localDataSource: di()));
 

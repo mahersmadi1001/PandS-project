@@ -21,6 +21,7 @@
     "settings": "الإعدادات",
     "profile": "الملف الشخصي",
     "home": "الرئيسية",
+    "not_specified": "غير محدد",
     "back": "رجوع"
   },
   "auth": {
@@ -66,7 +67,11 @@
     "enter_skills": "أدخل مهاراتك (مفصولة بفاصلة)",
     "profile_not_found": "الملف الشخصي غير موجود",
     "generate_profile_link": "إنشاء رابط الملف الشخصي",
-    "upload_failed": "فشل رفع الصورة"
+    "upload_failed": "فشل رفع الصورة",
+    "image_upload_error": "فشل رفع الصورة: {error}",
+    "phone": "رقم الهاتف",
+    "no_bio": "لا توجد نبذة",
+    "no_skills": "لا توجد مهارات"
   },
   "post": {
     "create_post": "إنشاء منشور",

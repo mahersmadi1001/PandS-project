@@ -26,7 +26,7 @@ class ProfileEntity {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'name': name,
+      'full_name': name,
       'email': email,
       'bio': bio,
       'profession': profession,
@@ -41,15 +41,19 @@ class ProfileEntity {
   factory ProfileEntity.fromMap(Map<String, dynamic> map) {
     return ProfileEntity(
       uid: map['uid'] ?? '',
-      name: map['name'] ?? '',
+      name: map['full_name'] ?? '',
       email: map['email'] ?? '',
       bio: map['bio'] ?? '',
       profession: map['profession'] ?? '',
       skills: List<String>.from(map['skills'] ?? []),
       profileImageUrl: map['profileImageUrl'] ?? '',
       profileLink: map['profileLink'] ?? '',
-      createdAt: DateTime.parse(map['createdAt'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(map['updatedAt'] ?? DateTime.now().toIso8601String()),
+      createdAt: DateTime.parse(
+        map['createdAt'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        map['updatedAt'] ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 

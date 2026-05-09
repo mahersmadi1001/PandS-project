@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
-import 'package:p/features/profile/domain/entities/profile_entity.dart';
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -47,7 +46,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (userDoc.exists) {
         final userData = userDoc.data() as Map<String, dynamic>;
         setState(() {
-          _nameController.text = userData['fullName'] ?? '';
+          _nameController.text = userData['full_name'] ?? '';
           _bioController.text = userData['bio'] ?? '';
           _professionController.text = userData['profession'] ?? '';
           _skillsController.text = userData['skills'] != null
@@ -88,7 +87,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('فشل رفع الصورة: ${e.toString()}')),
+        SnackBar(
+          content: Text(
+            'profile.image_upload_error'.tr(namedArgs: {'error': e.toString()}),
+          ),
+        ),
       );
     } finally {
       setState(() {
@@ -138,25 +141,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         // Return true to indicate data was saved
         Navigator.of(context).pop(true);
       });
-
-      final updatedProfile = ProfileEntity(
-        uid: userId,
-        name: _nameController.text.trim(),
-        email: '', // Email will be loaded from Firestore
-        bio: _bioController.text.trim(),
-        profession: _professionController.text.trim(),
-        skills: _skillsController.text
-            .split(',')
-            .map((s) => s.trim())
-            .where((s) => s.isNotEmpty)
-            .toList(),
-        profileImageUrl: '', // Will be updated if image is uploaded
-        profileLink: _profileLinkController.text.trim(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      context.read<ProfileBloc>().add(UpdateProfile(profile: updatedProfile));
     }
   }
 
@@ -173,8 +157,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         };
 
         // Only update name if it's different
-        if (_nameController.text.trim() != (currentData['fullName'] ?? '')) {
-          updateData['fullName'] = _nameController.text.trim();
+        if (_nameController.text.trim() != (currentData['full_name'] ?? '')) {
+          updateData['full_name'] = _nameController.text.trim();
         }
 
         // Only update bio if it's different

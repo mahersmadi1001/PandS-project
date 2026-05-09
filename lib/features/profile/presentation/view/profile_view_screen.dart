@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/theme/app_colors.dart';
@@ -147,7 +148,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                               ),
                               SizedBox(height: 8.h),
                               Text(
-                                _userData!['fullName'] ?? 'غير محدد',
+                                _userData!['full_name'] ?? 'غير محدد',
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
@@ -155,13 +156,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                                 ),
                               ),
                               SizedBox(height: 4.h),
-                              Text(
-                                _userData!['profession'] ?? 'غير محدد',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.white.withOpacity(0.9),
-                                ),
-                              ),
                             ],
                           ),
                         ),
@@ -184,35 +178,35 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                       children: [
                         // Email
                         _buildInfoRow(
-                          'البريد الإلكتروني',
-                          _userData!['email'] ?? 'غير محدد',
+                          "auth.email".tr(),
+                          _userData!['email'] ?? 'general.not_specified'.tr(),
                           Icons.email,
                         ),
                         SizedBox(height: 16.h),
 
                         // Phone
                         _buildInfoRow(
-                          'رقم الهاتف',
-                          _userData!['phone'] ?? 'غير محدد',
+                          'profile.phone'.tr(),
+                          _userData!['phone'] ?? 'general.not_specified'.tr(),
                           Icons.phone,
                         ),
                         SizedBox(height: 16.h),
 
                         // Bio
                         _buildInfoRow(
-                          'النبذة التعريفية',
-                          _userData!['bio'] ?? 'لا توجد نبذة',
+                          'profile.bio'.tr(),
+                          _userData!['bio'] ?? 'profile.no_bio'.tr(),
                           Icons.info_outline,
                         ),
                         SizedBox(height: 16.h),
 
                         // Skills
                         _buildInfoRow(
-                          'المهارات',
+                          'profile.skills'.tr(),
                           _userData!['skills'] != null &&
                                   _userData!['skills'].isNotEmpty
                               ? (_userData!['skills'] as List).join(', ')
-                              : 'لا توجد مهارات',
+                              : 'profile.no_skills'.tr(),
                           Icons.work_outline,
                         ),
                         SizedBox(height: 16.h),
@@ -221,7 +215,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                         if (_userData!['profileLink'] != null &&
                             _userData!['profileLink'].isNotEmpty)
                           _buildInfoRow(
-                            'رابط الملف الشخصي',
+                            'profile.profile_link'.tr(),
                             _userData!['profileLink'],
                             Icons.link,
                           ),
@@ -231,7 +225,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 ],
               ),
             )
-          : const Center(child: Text('لا توجد بيانات للمستخدم')),
+          : Center(child: Text('profile.profile_not_found'.tr())),
     );
   }
 
