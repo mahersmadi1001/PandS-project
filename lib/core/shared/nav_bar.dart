@@ -13,7 +13,7 @@ import 'package:p/features/create_and_view_post/presentation/views/creat_post.da
 
 import 'package:p/features/create_and_view_post/presentation/views/home_screen.dart';
 import 'package:p/features/history/presentation/view/history_screen.dart';
-import 'package:p/features/profile/presentation/view/profile_screen.dart';
+import 'package:p/features/profile/presentation/view/profile_edit_screen.dart';
 import 'package:p/features/profile/presentation/view/profile_view_screen.dart';
 import 'package:p/features/settings/presentation/view/settings_screen.dart';
 

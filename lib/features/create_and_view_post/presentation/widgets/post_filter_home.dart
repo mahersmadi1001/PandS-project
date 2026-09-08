@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/post_card/post_card.dart';
@@ -21,7 +20,6 @@ class PostWidgetHome extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 16.h),
-        // Category header
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
@@ -38,7 +36,6 @@ class PostWidgetHome extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        // Posts in this category
         ...categoryPosts.map(
           (post) => Padding(
             padding: EdgeInsets.only(bottom: 12.h),
@@ -53,7 +50,7 @@ class PostWidgetHome extends StatelessWidget {
                   ),
                 );
               },
-              onOfferTap: null, // No offer button for offers
+              onOfferTap: null,
             ),
           ),
         ),

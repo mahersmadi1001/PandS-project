@@ -32,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Load current user profile using Hive session
+
     final userId = _authLocalDataSource.getSession();
     if (userId != null) {
       _loadUserData(userId);
@@ -116,8 +116,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _copyToClipboard(String text) {
-    // This would require flutter/services
-    // For now, we'll show a dialog
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -136,9 +134,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveProfile() {
     final userId = _authLocalDataSource.getSession();
     if (userId != null) {
-      // Update profile data in Firestore users collection
       _updateUserData(userId).then((_) {
-        // Return true to indicate data was saved
         Navigator.of(context).pop(true);
       });
     }
@@ -146,33 +142,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _updateUserData(String userId) async {
     try {
-      // Get current data first
       final userDoc = await _firestore.collection('users').doc(userId).get();
       if (userDoc.exists) {
         final currentData = userDoc.data() as Map<String, dynamic>;
 
-        // Only update fields that are different, preserve others
         final updateData = <String, dynamic>{
           'updatedAt': DateTime.now().toIso8601String(),
         };
 
-        // Only update name if it's different
         if (_nameController.text.trim() != (currentData['full_name'] ?? '')) {
           updateData['full_name'] = _nameController.text.trim();
         }
-
-        // Only update bio if it's different
         if (_bioController.text.trim() != (currentData['bio'] ?? '')) {
           updateData['bio'] = _bioController.text.trim();
         }
 
-        // Only update profession if it's different
         if (_professionController.text.trim() !=
             (currentData['profession'] ?? '')) {
           updateData['profession'] = _professionController.text.trim();
         }
 
-        // Only update skills if it's different
         final newSkills = _skillsController.text
             .split(',')
             .map((s) => s.trim())
@@ -183,7 +172,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           updateData['skills'] = newSkills;
         }
 
-        // Only update profile link if it's different
         if (_profileLinkController.text.trim() !=
             (currentData['profileLink'] ?? '')) {
           updateData['profileLink'] = _profileLinkController.text.trim();
@@ -246,7 +234,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           if (state is ProfileLoaded) {
             final profile = state.profile;
 
-            // Initialize controllers with current profile data
             _nameController.text = profile.name;
             _bioController.text = profile.bio;
             _professionController.text = profile.profession;
@@ -257,7 +244,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               padding: EdgeInsets.all(16.w),
               child: Column(
                 children: [
-                  // Profile Header with Image
                   Container(
                     height: 200.h,
                     width: double.infinity,
@@ -274,7 +260,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                     child: Stack(
                       children: [
-                        // Profile Image
                         if (profile.profileImageUrl.isNotEmpty)
                           Positioned(
                             top: 20.h,
@@ -295,7 +280,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ),
                             ),
                           ),
-                        // User Info Overlay
+
                         Positioned(
                           bottom: 20.h,
                           left: 20.w,
@@ -341,7 +326,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   SizedBox(height: 20.h),
 
-                  // Profile Information Form
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16.w),
@@ -353,7 +337,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Name Field
                         Text(
                           'profile.name'.tr(),
                           style: TextStyle(
@@ -380,7 +363,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 16.h),
 
-                        // Bio Field
                         Text(
                           'profile.bio'.tr(),
                           style: TextStyle(
@@ -408,7 +390,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 16.h),
 
-                        // Profession Field
                         Text(
                           'profile.profession'.tr(),
                           style: TextStyle(
@@ -435,7 +416,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 16.h),
 
-                        // Skills Field
                         Text(
                           'profile.skills'.tr(),
                           style: TextStyle(
@@ -462,7 +442,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 16.h),
 
-                        // Profile Link Field
                         Text(
                           'profile.profile_link'.tr(),
                           style: TextStyle(
@@ -494,10 +473,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 20.h),
 
-                        // Action Buttons
                         Row(
                           children: [
-                            // Upload Image Button
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: _pickImage,
@@ -512,7 +489,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                             SizedBox(width: 10.w),
 
-                            // Upload to Supabase Button
                             if (_selectedImage != null)
                               Expanded(
                                 child: ElevatedButton(
@@ -543,7 +519,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         SizedBox(height: 20.h),
 
-                        // Generate Link Button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

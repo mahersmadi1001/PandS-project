@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
 import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
@@ -47,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginError) {
-         showErrorSnackBar(message: state.message, context: context);
+          showErrorSnackBar(message: state.message, context: context);
         }
         if (state is LoginSuccess) {
           Navigator.pushReplacement(
@@ -88,15 +89,21 @@ class _LoginViewState extends State<LoginView> {
                       SizedBox(height: 20.h),
                       Tff(
                         controller: _emailCtrl,
-                        validator: AppValidators.validateEmail,
-                        label: 'Email',
+                        validator: (value) => AppValidators.validateEmail(
+                          value,
+                          context: context,
+                        ),
+                        label: 'auth.email'.tr(),
                       ),
                       SizedBox(height: 20.h),
                       Tff(
                         controller: _passwordCtrl,
                         obscureText: !_showPassword,
-                        validator: AppValidators.validatePassword,
-                        label: 'Password',
+                        validator: (value) => AppValidators.validatePassword(
+                          value,
+                          context: context,
+                        ),
+                        label: 'auth.password'.tr(),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _showPassword

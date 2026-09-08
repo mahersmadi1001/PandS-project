@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/theme/app_colors.dart';
 
 class AppTheme {
@@ -32,7 +31,7 @@ class AppTheme {
       centerTitle: true,
       iconTheme: const IconThemeData(color: AppColors.textPrimaryDark),
     ),
-    colorScheme: const ColorScheme.dark(
+    colorScheme: const ColorScheme.dark( 
       primary: AppColors.primaryBlue,
       surface: AppColors.cardDark,
     ),

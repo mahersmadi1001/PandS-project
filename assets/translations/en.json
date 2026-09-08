@@ -167,5 +167,94 @@
     "posts": "Posts",
     "requests": "Requests",
     "offers": "Offers"
+  },
+  "datasource_errors": {
+    "image_upload_failed": "Image upload failed: {error}",
+    "no_internet_upload": "No internet connection during image upload",
+    "no_internet_retry": "No internet connection, please try again",
+    "fetch_posts_error": "Error fetching posts: {error}",
+    "no_internet": "No internet connection",
+    "permission_denied": "Permission denied",
+    "deadline_exceeded": "Connection timeout, please try again",
+    "unknown_error": "An error occurred: {error}",
+    "email_already_registered": "This email is already registered",
+    "generic_error": "An error occurred: {error}",
+    "email_not_found": "Email not found",
+    "password_incorrect": "Incorrect password",
+    "data_not_found": "Data not found",
+    "permission_denied_developer": "Permission denied, contact developer"
+  },
+  "repository_errors": {
+    "save_profile_failed": "Failed to save profile: {error}",
+    "delete_profile_image_failed": "Failed to delete profile image: {error}",
+    "update_profile_failed": "Failed to update profile: {error}",
+    "generate_link_failed": "Failed to generate profile link: {error}"
+  },
+  "contact_section": {
+    "contact_info": "Contact Information",
+    "name_copied": "Name copied",
+    "email_copied": "Email copied",
+    "phone_number": "Phone Number",
+    "phone_copied": "Phone number copied",
+    "not_available": "Not available",
+    "post_owner_name": "Post owner name"
+  },
+  "time_format": {
+    "since_day": "Since a day",
+    "since_days": "Since {days} days",
+    "since_week": "Since a week",
+    "since_weeks": "Since {weeks} weeks",
+    "since_month": "Since a month",
+    "since_months": "Since {months} months",
+    "since_hour": "Since an hour",
+    "since_hours": "Since {hours} hours",
+    "since_minute": "Since a minute",
+    "since_minutes": "Since {minutes} minutes",
+    "now": "Now"
+  },
+  "upload_box": {
+    "upload_image": "Upload image",
+    "file_not_exist": "Selected file does not exist",
+    "pick_image_failed": "Failed to pick image: {error}"
+  },
+  "validators": {
+    "name_required": "Please enter the name",
+    "name_letters_only": "The name must contain letters only",
+    "phone_required": "Please enter the phone number",
+    "phone_incorrect": "Incorrect phone number (example: 09xxxxxxxx)",
+    "email_required": "Please enter the email",
+    "email_incorrect": "The email format is incorrect",
+    "password_required": "Please enter the password",
+    "password_requirements": "It must contain uppercase and lowercase letters, numbers, and symbols",
+    "title_required": "Please enter a title",
+    "title_min_length": "Title must be at least 3 characters long",
+    "title_max_length": "Title must be less than 100 characters",
+    "category_required": "Please select a category",
+    "province_required": "Please select a province",
+    "budget_required": "Please enter a budget",
+    "budget_invalid": "Please enter a valid number",
+    "budget_positive": "Budget must be greater than 0",
+    "budget_too_high": "Budget seems too high",
+    "description_required": "Please enter a description",
+    "description_min_length": "Description must be at least 10 characters long",
+    "description_max_length": "Description must be less than 1000 characters",
+    "image_required": "Please upload an image",
+    "image_size_limit": "Image size must be less than 5MB",
+    "image_format": "Please upload a valid image file (JPG, PNG, or GIF)"
+  },
+  "auth_ui": {
+    "confirm_password_required": "Please confirm your password",
+    "passwords_not_match": "Passwords do not match",
+    "account_created_success": "Account created successfully ✓"
+  },
+  "error_messages": {
+    "fetch_requests_error": "Error fetching requests",
+    "retry": "Retry",
+    "no_requests": "No requests currently",
+    "try_later_create_request": "Try later or create a new request",
+    "fetch_offers_error": "Error fetching offers",
+    "no_offers": "No offers currently",
+    "try_later_create_offer": "Try later or create a new offer",
+    "logout_error_with_message": "Error during logout: {error}"
   }
 }

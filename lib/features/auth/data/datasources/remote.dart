@@ -14,7 +14,6 @@ class RemoteDataSources {
 
   Future<UserEntity> register({required UserModel user}) async {
     try {
-      // Check internet connection first
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
         throw Exception(
@@ -60,7 +59,6 @@ class RemoteDataSources {
     required String password,
   }) async {
     try {
-      // Check internet connection first
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
         throw Exception(
@@ -103,7 +101,6 @@ class RemoteDataSources {
 
   Future<UserEntity?> getUserById(String uId) async {
     try {
-      // Check internet connection first
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
         throw Exception(

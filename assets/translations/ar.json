@@ -167,5 +167,94 @@
     "posts": "المنشورات",
     "requests": "الطلبات",
     "offers": "العروض"
+  },
+  "datasource_errors": {
+    "image_upload_failed": "فشل رفع الصورة: {error}",
+    "no_internet_upload": "لا يوجد اتصال بالإنترنت أثناء رفع الصورة",
+    "no_internet_retry": "لا يوجد اتصال بالإنترنت، أعد المحاولة",
+    "fetch_posts_error": "خطأ في جلب المنشورات: {error}",
+    "no_internet": "لا يوجد اتصال بالإنترنت",
+    "permission_denied": "ليس لديك صلاحية",
+    "deadline_exceeded": "انتهت مهلة الاتصال، أعد المحاولة",
+    "unknown_error": "حدث خطأ: {error}",
+    "email_already_registered": "هذا البريد الإلكتروني مسجل مسبقاً",
+    "generic_error": "حدث خطأ: {error}",
+    "email_not_found": "البريد الإلكتروني غير موجود",
+    "password_incorrect": "كلمة المرور غير صحيحة",
+    "data_not_found": "البيانات غير موجودة",
+    "permission_denied_developer": "ليس لديك صلاحية، تواصل مع المطوّر"
+  },
+  "repository_errors": {
+    "save_profile_failed": "فشل حفظ الملف الشخصي: {error}",
+    "delete_profile_image_failed": "فشل حذف صورة الملف الشخصي: {error}",
+    "update_profile_failed": "فشل تحديث الملف الشخصي: {error}",
+    "generate_link_failed": "فشل إنشاء رابط الملف الشخصي: {error}"
+  },
+  "contact_section": {
+    "contact_info": "معلومات التواصل",
+    "name_copied": "تم نسخ الاسم",
+    "email_copied": "تم نسخ البريد الإلكتروني",
+    "phone_number": "رقم الهاتف",
+    "phone_copied": "تم نسخ رقم الهاتف",
+    "not_available": "غير متوفر",
+    "post_owner_name": "اسم صاحب المنشور"
+  },
+  "time_format": {
+    "since_day": "منذ يوم",
+    "since_days": "منذ {days} أيام",
+    "since_week": "منذ أسبوع",
+    "since_weeks": "منذ {weeks} أسابيع",
+    "since_month": "منذ شهر",
+    "since_months": "منذ {months} أشهر",
+    "since_hour": "منذ ساعة",
+    "since_hours": "منذ {hours} ساعات",
+    "since_minute": "منذ دقيقة",
+    "since_minutes": "منذ {minutes} دقائق",
+    "now": "الآن"
+  },
+  "upload_box": {
+    "upload_image": "رفع صورة",
+    "file_not_exist": "الملف المحدد غير موجود",
+    "pick_image_failed": "فشل اختيار الصورة: {error}"
+  },
+  "validators": {
+    "name_required": "الرجاء إدخال الاسم",
+    "name_letters_only": "يجب أن يحتوي الاسم على أحرف فقط",
+    "phone_required": "الرجاء إدخال رقم الهاتف",
+    "phone_incorrect": "رقم الهاتف غير صحيح (مثال: 09xxxxxxxx)",
+    "email_required": "الرجاء إدخال البريد الإلكتروني",
+    "email_incorrect": "تنسيق البريد الإلكتروني غير صحيح",
+    "password_required": "الرجاء إدخال كلمة المرور",
+    "password_requirements": "يجب أن تحتوي على أحرف كبيرة وصغيرة وأرقام ورموز",
+    "title_required": "الرجاء إدخال العنوان",
+    "title_min_length": "يجب أن يكون العنوان 3 أحرف على الأقل",
+    "title_max_length": "يجب أن يكون العنوان أقل من 100 حرف",
+    "category_required": "الرجاء اختيار الفئة",
+    "province_required": "الرجاء اختيار المحافظة",
+    "budget_required": "الرجاء إدخال الميزانية",
+    "budget_invalid": "الرجاء إدخال رقم صحيح",
+    "budget_positive": "يجب أن تكون الميزانية أكبر من 0",
+    "budget_too_high": "الميزانية تبدو عالية جداً",
+    "description_required": "الرجاء إدخال الوصف",
+    "description_min_length": "يجب أن يكون الوصف 10 أحرف على الأقل",
+    "description_max_length": "يجب أن يكون الوصف أقل من 1000 حرف",
+    "image_required": "الرجاء رفع صورة",
+    "image_size_limit": "يجب أن يكون حجم الصورة أقل من 5MB",
+    "image_format": "الرجاء رفع صورة صالحة (JPG, PNG, أو GIF)"
+  },
+  "auth_ui": {
+    "confirm_password_required": "الرجاء تأكيد كلمة المرور",
+    "passwords_not_match": "كلمات المرور غير متطابقة",
+    "account_created_success": "تم إنشاء الحساب بنجاح ✓"
+  },
+  "error_messages": {
+    "fetch_requests_error": "حدث خطأ في جلب الطلبات",
+    "retry": "إعادة المحاولة",
+    "no_requests": "لا توجد طلبات حالياً",
+    "try_later_create_request": "حاول لاحقاً أو قم بإنشاء طلب جديد",
+    "fetch_offers_error": "حدث خطأ في جلب العروض",
+    "no_offers": "لا توجد عروض حالياً",
+    "try_later_create_offer": "حاول لاحقاً أو قم بإنشاء عرض جديد",
+    "logout_error_with_message": "حدث خطأ أثناء تسجيل الخروج: {error}"
   }
 }

@@ -2,9 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/theme/app_colors.dart';
-import 'package:p/features/profile/presentation/view/profile_screen.dart';
+import 'package:p/features/profile/presentation/view/profile_edit_screen.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:p/features/profile/presentation/view/widgets/info_row.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key});
@@ -29,7 +30,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Reload data when returning from edit screen
+
     _loadUserData();
   }
 
@@ -92,7 +93,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   builder: (context) => const EditProfileScreen(),
                 ),
               );
-              // Reload data when returning from edit screen
+
               if (result == true || mounted) {
                 _loadUserData();
               }
@@ -107,7 +108,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               padding: EdgeInsets.all(16.w),
               child: Column(
                 children: [
-                  // Profile Header with Image
                   Container(
                     height: 200.h,
                     width: double.infinity,
@@ -124,7 +124,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                     ),
                     child: Stack(
                       children: [
-                        // User Info
                         Positioned(
                           bottom: 20.h,
                           left: 20.w,
@@ -148,7 +147,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                               ),
                               SizedBox(height: 8.h),
                               Text(
-                                _userData!['full_name'] ?? 'غير محدد',
+                                _userData!['full_name'] ?? 'general.not_specified'.tr(),
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
@@ -164,7 +163,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   ),
                   SizedBox(height: 20.h),
 
-                  // Profile Information Display
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16.w),
@@ -176,48 +174,48 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Email
-                        _buildInfoRow(
-                          "auth.email".tr(),
-                          _userData!['email'] ?? 'general.not_specified'.tr(),
-                          Icons.email,
+                        InfoRow(
+                          title: "auth.email".tr(),
+                          value:
+                              _userData!['email'] ??
+                              'general.not_specified'.tr(),
+                          icon: Icons.email,
                         ),
                         SizedBox(height: 16.h),
 
-                        // Phone
-                        _buildInfoRow(
-                          'profile.phone'.tr(),
-                          _userData!['phone'] ?? 'general.not_specified'.tr(),
-                          Icons.phone,
+                        InfoRow(
+                          title: 'profile.phone'.tr(),
+                          value:
+                              _userData!['phone'] ??
+                              'general.not_specified'.tr(),
+                          icon: Icons.phone,
                         ),
                         SizedBox(height: 16.h),
 
-                        // Bio
-                        _buildInfoRow(
-                          'profile.bio'.tr(),
-                          _userData!['bio'] ?? 'profile.no_bio'.tr(),
-                          Icons.info_outline,
+                        InfoRow(
+                          title: 'profile.bio'.tr(),
+                          value: _userData!['bio'] ?? 'profile.no_bio'.tr(),
+                          icon: Icons.info_outline,
                         ),
                         SizedBox(height: 16.h),
 
-                        // Skills
-                        _buildInfoRow(
-                          'profile.skills'.tr(),
-                          _userData!['skills'] != null &&
+                        InfoRow(
+                          title: 'profile.skills'.tr(),
+                          value:
+                              _userData!['skills'] != null &&
                                   _userData!['skills'].isNotEmpty
                               ? (_userData!['skills'] as List).join(', ')
                               : 'profile.no_skills'.tr(),
-                          Icons.work_outline,
+                          icon: Icons.work_outline,
                         ),
                         SizedBox(height: 16.h),
 
-                        // Profile Link
                         if (_userData!['profileLink'] != null &&
                             _userData!['profileLink'].isNotEmpty)
-                          _buildInfoRow(
-                            'profile.profile_link'.tr(),
-                            _userData!['profileLink'],
-                            Icons.link,
+                          InfoRow(
+                            title: 'profile.profile_link'.tr(),
+                            value: _userData!['profileLink'],
+                            icon: Icons.link,
                           ),
                       ],
                     ),
@@ -226,38 +224,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               ),
             )
           : Center(child: Text('profile.profile_not_found'.tr())),
-    );
-  }
-
-  Widget _buildInfoRow(String title, String value, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 20, color: AppColors.primaryBlue),
-            SizedBox(width: 8.w),
-            Text(
-              title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(12.w),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: Text(
-            value,
-            style: TextStyle(fontSize: 14.sp, color: Colors.grey[800]),
-          ),
-        ),
-      ],
     );
   }
 }

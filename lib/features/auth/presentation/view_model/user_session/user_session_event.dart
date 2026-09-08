@@ -6,16 +6,13 @@ abstract class UserSessionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-
 class UserSessionCheckStatus extends UserSessionEvent {
   const UserSessionCheckStatus();
 }
 
-
 class CompleteOnboarding extends UserSessionEvent {
   const CompleteOnboarding();
 }
-
 
 class LogoutUser extends UserSessionEvent {
   const LogoutUser();

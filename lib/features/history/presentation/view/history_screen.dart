@@ -21,7 +21,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    // Load history when screen opens
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HistoryBloc>().add(const GetHistoryPosts());
     });
@@ -102,7 +102,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Requests section with carousel
+         
             Padding(
               padding: EdgeInsets.all(8.sp),
               child: Row(
@@ -126,7 +126,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ),
 
-            // Requests carousel
             BlocBuilder<HistoryBloc, HistoryState>(
               builder: (context, state) {
                 if (state is HistoryLoading) {
@@ -201,7 +200,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
             ),
 
-            // Offers section
+      
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -225,7 +224,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ),
 
-            // Offers carousel
+          
             BlocBuilder<HistoryBloc, HistoryState>(
               builder: (context, state) {
                 if (state is HistoryLoading) {

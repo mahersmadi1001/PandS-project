@@ -12,8 +12,6 @@ import 'package:p/features/create_and_view_post/domain/usecases/get_posts_usecas
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-// ─── Profile imports ────────────────────────────────────────────────────────
 import 'package:p/features/profile/domain/repositories/profile_repository.dart';
 import 'package:p/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:p/features/profile/domain/usecases/update_profile_usecase.dart';
@@ -21,18 +19,10 @@ import 'package:p/features/profile/domain/usecases/upload_profile_image_usecase.
 import 'package:p/features/profile/domain/usecases/delete_profile_image_usecase.dart';
 import 'package:p/features/profile/domain/usecases/generate_profile_link_usecase.dart';
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
-
-// ─── History imports ────────────────────────────────────────────────
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
-
-// ─── Theme imports ──────────────────────────────────────────────────
 import 'package:p/core/presentation/view_model/theme_bloc.dart';
-
-// ─── Language imports ──────────────────────────────────────────────────
 import 'package:p/core/services/language_service.dart';
-import 'package:p/core/presentation/view_model/language_cubit.dart';
-
-// ─── Auth imports (لا تغيير) ──────────────────────────────────────────────────
+import 'package:p/core/presentation/view_model/languge_cubit/language_cubit.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:p/features/auth/data/datasources/remote.dart';
 import 'package:p/features/auth/data/repositories/repositories_implement.dart';
@@ -45,14 +35,12 @@ import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
 final di = GetIt.instance;
 
 Future<void> setup() async {
-  // ─── External ──────────────────────────────────────────────────────────────
+
   di.registerLazySingleton(() => FirebaseFirestore.instance);
-  di.registerLazySingleton(() => Supabase.instance.client); // ← Supabase client
+  di.registerLazySingleton(() => Supabase.instance.client);
   di.registerLazySingleton(() => InternetConnectionChecker.instance);
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // AUTH
-  // ═══════════════════════════════════════════════════════════════════════════
+
 
   di.registerLazySingleton<RemoteDataSources>(
     () => RemoteDataSources(firestore: di(), connectionChecker: di()),
@@ -72,14 +60,11 @@ Future<void> setup() async {
   di.registerFactory(() => LoginBloc(loginUsecase: di()));
   di.registerFactory(() => UserSessionBloc(localDataSource: di()));
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // POST
-  // ═══════════════════════════════════════════════════════════════════════════
 
   di.registerLazySingleton<PostRemoteDataSource>(
     () => PostRemoteDataSourceImpl(
       firestore: di(),
-      supabase: di(), // ← Supabase client من الـ External
+      supabase: di(),
     ),
   );
   di.registerLazySingleton<PostRepository>(
@@ -98,9 +83,7 @@ Future<void> setup() async {
 
   di.registerFactory(() => GetPostsBloc(getPostsUsecase: di()));
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // PROFILE
-  // ═══════════════════════════════════════════════════════════════════════════
+
 
   di.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl());
   di.registerLazySingleton(() => GetProfileUseCase(di()));
@@ -119,13 +102,13 @@ Future<void> setup() async {
     ),
   );
 
-  // Theme
+
   di.registerFactory(() => ThemeBloc());
 
-  // Language
+
   di.registerFactory(() => LanguageCubit());
 
-  // History
+ 
   di.registerFactory(
     () => HistoryBloc(
       getPostsUsecase: di(),

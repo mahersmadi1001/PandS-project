@@ -109,7 +109,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       await _updateProfileUseCase(event.profile);
       emit(ProfileUpdated());
-      // Reload profile to get updated data
+    
       add(LoadProfile(uid: event.profile.uid));
     } catch (e) {
       emit(ProfileError(message: e.toString()));
@@ -122,7 +122,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       final imageUrl = await _uploadProfileImageUseCase(event.uid, event.imagePath);
       if (imageUrl != null) {
         emit(ProfileImageUploaded(imageUrl: imageUrl));
-        // Reload profile to get updated data
+       
         add(LoadProfile(uid: event.uid));
       } else {
         emit(ProfileError(message: 'Failed to upload profile image'));
@@ -137,7 +137,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       await _deleteProfileImageUseCase(event.uid);
       emit(ProfileImageDeleted());
-      // Reload profile to get updated data
+   
       add(LoadProfile(uid: event.uid));
     } catch (e) {
       emit(ProfileError(message: e.toString()));

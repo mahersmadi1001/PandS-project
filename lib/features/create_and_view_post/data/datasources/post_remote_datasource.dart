@@ -17,7 +17,6 @@ abstract class PostRemoteDataSource {
     String? userId,
   });
 
-  /// حذف منشور معين من Firestore
   Future<void> deletePost(String postId);
 }
 
@@ -62,14 +61,12 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     }
   }
 
-  // ─── حفظ المنشور في Firestore ─────────────────────────────────────────────
-  // الـ document ID = post_id (UUID) — مطابق لما يظهر في Firebase Console
   @override
   Future<void> savePost(PostModel post) async {
     try {
       await firestore
           .collection(_collection)
-          .doc(post.postId) // post_id يكون هو الـ document ID
+          .doc(post.postId)
           .set(post.toMap())
           .timeout(_timeout);
     } on FirebaseException catch (e) {
@@ -79,7 +76,6 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     }
   }
 
-  // ─── جلب المنشورات من Firestore ─────────────────────────────────────────────
   @override
   Future<List<PostEntity>> getPosts({
     PostType? postType,
@@ -91,15 +87,11 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     try {
       Query query = firestore.collection(_collection);
 
-      // فلترة حسب المستخدم إذا كان userId موجود
       if (userId != null && userId.isNotEmpty) {
         query = query.where('creator_id', isEqualTo: userId);
       }
 
-      // ترتيب حسب تاريخ الإنشاء (الأحدث أولاً) - يجب أن يكون أول عملية
       query = query.orderBy('created_at', descending: true);
-
-      // تطبيق الفلاتر
       if (postType != null) {
         query = query.where('post_type', isEqualTo: postType.name);
       }
@@ -119,7 +111,6 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
           .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
 
-      // تطبيق البحث النصي إذا كان موجود
       if (searchQuery != null && searchQuery.isNotEmpty) {
         final filteredPosts = posts.where((post) {
           final query = searchQuery.toLowerCase();
@@ -139,7 +130,6 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     }
   }
 
-  // ─── حذف منشور من Firestore ─────────────────────────────────────────────
   @override
   Future<void> deletePost(String postId) async {
     try {
@@ -155,7 +145,6 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     }
   }
 
-  // ─── ترجمة أخطاء Firebase ─────────────────────────────────────────────────
   String _mapFirebaseError(FirebaseException e) {
     switch (e.code) {
       case 'unavailable':

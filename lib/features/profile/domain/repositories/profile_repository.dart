@@ -53,18 +53,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
       final response = await _supabase.storage
           .from('profiles')
           .upload(fileName, file);
-
       if (response != null) {
         final publicUrl = await _supabase.storage
             .from('profiles')
             .getPublicUrl(fileName);
 
-        // Update profile with new image URL
         await _firestore.collection('users').doc(uid).update({
           'profileImageUrl': publicUrl,
           'updatedAt': DateTime.now().toIso8601String(),
         });
-
         print('Profile image uploaded successfully: $publicUrl');
         return publicUrl;
       }
@@ -78,25 +75,21 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<void> deleteProfileImage(String uid) async {
     try {
-      // Get current profile to find image URL
       final profileDoc = await _firestore.collection('users').doc(uid).get();
       if (profileDoc.exists) {
         final profileData = profileDoc.data() as Map<String, dynamic>;
         final imageUrl = profileData['profileImageUrl'] as String?;
 
         if (imageUrl != null && imageUrl.isNotEmpty) {
-          // Extract file name from URL
           final uri = Uri.parse(imageUrl);
           final segments = uri.pathSegments;
           final fileName = segments.isNotEmpty ? segments.last : '';
 
           if (fileName.isNotEmpty) {
-            // Delete from Supabase storage
             await _supabase.storage.from('profiles').remove([fileName]);
             print('Profile image deleted from storage: $fileName');
           }
 
-          // Update profile to remove image URL
           await _firestore.collection('users').doc(uid).update({
             'profileImageUrl': '',
             'updatedAt': DateTime.now().toIso8601String(),
@@ -130,7 +123,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final profileLink = 'https://yourapp.com/profile/$uid';
 
-      // Save profile link to Firestore
       await _firestore.collection('users').doc(uid).update({
         'profileLink': profileLink,
         'updatedAt': DateTime.now().toIso8601String(),

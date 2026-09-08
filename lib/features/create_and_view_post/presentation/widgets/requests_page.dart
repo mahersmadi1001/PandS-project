@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
@@ -29,7 +30,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Posts list
             Expanded(
               child: BlocBuilder<GetPostsBloc, GetPostsState>(
                 builder: (context, state) {
@@ -47,7 +47,7 @@ class _RequsetsPageState extends State<RequsetsPage> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'حدث خطأ في جلب الطلبات',
+                            'error_messages.fetch_requests_error'.tr(),
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class _RequsetsPageState extends State<RequsetsPage> {
                                 RefreshPosts(postType: PostType.request),
                               );
                             },
-                            child: Text('إعادة المحاولة'),
+                            child: Text('error_messages.retry'.tr()),
                           ),
                         ],
                       ),
@@ -88,7 +88,7 @@ class _RequsetsPageState extends State<RequsetsPage> {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'لا توجد طلبات حالياً',
+                              'error_messages.no_requests'.tr(),
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
@@ -97,7 +97,7 @@ class _RequsetsPageState extends State<RequsetsPage> {
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'حاول لاحقاً أو قم بإنشاء طلب جديد',
+                              'error_messages.try_later_create_request'.tr(),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey[500],
@@ -108,7 +108,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
                       );
                     }
 
-                    // Group posts by category
                     final Map<String, List<PostEntity>> postsByCategory = {};
                     for (final post in state.posts) {
                       final category = post.category;
@@ -137,7 +136,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 16.h),
-                              // Category header
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 12.w,
@@ -157,7 +155,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
                                 ),
                               ),
                               SizedBox(height: 8.h),
-                              // Posts in this category
                               ...categoryPosts.map(
                                 (post) => Padding(
                                   padding: EdgeInsets.only(bottom: 12.h),

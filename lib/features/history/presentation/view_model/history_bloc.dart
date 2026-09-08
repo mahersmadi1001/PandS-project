@@ -47,8 +47,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(const HistoryLoading());
     try {
-      // Post is already saved to Firestore in CreatePostBloc
-      // Just trigger a refresh to load updated history
       add(const GetHistoryPosts());
     } catch (e) {
       print(e);
@@ -62,17 +60,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(const HistoryLoading());
     try {
-      // Get current user ID
       final userId = await authLocalDataSource.getSession();
       if (userId == null) {
         emit(const HistoryError(message: 'User not logged in'));
         return;
       }
 
-      // Cancel any existing subscription
       await _postsSubscription?.cancel();
 
-      // Load initial data first
       final result = await getPostsUsecase(
         postType: null,
         category: null,
@@ -88,7 +83,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       ) {
         emit(HistoryLoaded(posts: posts));
 
-        // Set up real-time listener after initial load
         _postsSubscription = firestore
             .collection('posts')
             .where('creator_id', isEqualTo: userId)
@@ -98,14 +92,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
               (snapshot) {
                 if (isClosed) return;
 
-                // Sort client-side to avoid index issues
                 final updatedPosts =
                     snapshot.docs
                         .map((doc) => PostModel.fromMap(doc.data()))
                         .toList()
                       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-                // Use add instead of emit to avoid completion issues
                 add(LoadHistoryPosts(posts: updatedPosts));
               },
               onError: (error) {
@@ -129,7 +121,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(const HistoryLoading());
     try {
-      // Clear history by loading empty posts
       final userId = await authLocalDataSource.getSession();
       if (userId == null) {
         emit(const HistoryError(message: 'User not logged in'));
@@ -148,7 +139,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
 
       result.fold(
         (failure) => emit(HistoryError(message: failure.message)),
-        (posts) => emit(HistoryLoaded(posts: [])), // Empty history
+        (posts) => emit(HistoryLoaded(posts: [])),
       );
     } catch (e) {
       print(e);
@@ -164,7 +155,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(const HistoryLoading());
     try {
-      // Remove by reloading posts ( Firestore doesn't support delete by postId directly)
       add(const GetHistoryPosts());
     } catch (e) {
       print(e);
@@ -178,14 +168,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(const HistoryLoading());
     try {
-      // Get current user ID to verify ownership
       final userId = await authLocalDataSource.getSession();
       if (userId == null) {
         emit(const HistoryError(message: 'User not logged in'));
         return;
       }
 
-      // Delete post from Firestore
       final result = await postRepository.deletePost(event.postId);
 
       if (isClosed) return;
@@ -194,7 +182,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         _,
       ) async {
         add(const HistoryPostDeleted());
-        // Add small delay before reload to avoid handler conflicts
+
         await Future.delayed(Duration(milliseconds: 100));
         if (!isClosed) {
           add(const GetHistoryPosts());

@@ -35,15 +35,6 @@ class LanguageService {
     await EasyLocalization.of(context)?.setLocale(Locale(languageCode));
   }
 
-  static Locale getCurrentLocale() {
-    final savedLanguage = getSavedLanguage();
-    return Locale(savedLanguage);
-  }
-
-  static bool isRTL() {
-    final currentLanguage = getSavedLanguage();
-    return currentLanguage == 'ar';
-  }
 
   static List<Locale> get supportedLocales => [
     const Locale('en'),

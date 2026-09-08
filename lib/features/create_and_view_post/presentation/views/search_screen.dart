@@ -7,11 +7,9 @@ import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 
 import 'package:p/core/theme/app_colors.dart';
-import 'package:p/core/string/list_addrees_string.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
-
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -126,7 +124,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
 
-            // Results Section
             Expanded(
               child: BlocBuilder<GetPostsBloc, GetPostsState>(
                 builder: (context, state) {
@@ -165,7 +162,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             onPressed: () {
                               context.read<GetPostsBloc>().add(FetchPosts());
                             },
-                            child: Text('Retry'),
+                            child: Text('general.retry'.tr()),
                           ),
                         ],
                       ),

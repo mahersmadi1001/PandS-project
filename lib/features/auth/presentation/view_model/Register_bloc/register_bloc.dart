@@ -22,7 +22,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     try {
       final result = await sginUseCase(event.user);
 
-  
       if (isClosed) return;
 
       result.fold(
@@ -30,7 +29,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         (_) => emit(const RegisterSuccess()),
       );
     } catch (e) {
-    
       if (isClosed) return;
 
       emit(RegisterError(message: e.toString().replaceAll('Exception: ', '')));

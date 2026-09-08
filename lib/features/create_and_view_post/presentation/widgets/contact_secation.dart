@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/auth/domain/entities/user.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
@@ -11,7 +12,6 @@ Widget contactSection({
   required PostEntity post,
   required bool isLoading,
 }) {
-  // Get real user data or fallback to post data
   final userName = userEntity?.fullName ?? post.creatorName;
   final userEmail =
       userEntity?.email ?? (isLoading ? 'Loading' : 'Not available');
@@ -22,7 +22,7 @@ Widget contactSection({
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'معلومات التواصل',
+        'contact_section.contact_info'.tr(),
         style: TextStyle(
           fontSize: 18.sp,
           fontWeight: FontWeight.bold,
@@ -41,23 +41,27 @@ Widget contactSection({
           children: [
             ContactItem(
               icon: Icons.person,
-              label: 'Name of the post owner',
+              label: 'contact_section.post_owner_name'.tr(),
               value: userName,
               onTap: () {
-                copyToClipboard(context, userName, 'تم نسخ الاسم');
+                copyToClipboard(
+                  context,
+                  userName,
+                  'contact_section.name_copied'.tr(),
+                );
               },
             ),
             SizedBox(height: 12.h),
             ContactItem(
               icon: Icons.email,
-              label: 'Email',
+              label: 'auth.email'.tr(),
               value: userEmail,
               onTap: userEmail != 'Loading' && userEmail != 'Not available'
                   ? () {
                       copyToClipboard(
                         context,
                         userEmail,
-                        'تم نسخ البريد الإلكتروني',
+                        'contact_section.email_copied'.tr(),
                       );
                     }
                   : null,
@@ -65,11 +69,17 @@ Widget contactSection({
             SizedBox(height: 12.h),
             ContactItem(
               icon: Icons.phone,
-              label: 'رقم الهاتف',
+              label: 'contact_section.phone_number'.tr(),
               value: userPhone,
-              onTap: userPhone != 'Loading' && userPhone != 'غير متوفر'
+              onTap:
+                  userPhone != 'Loading' &&
+                      userPhone != 'contact_section.not_available'.tr()
                   ? () {
-                      copyToClipboard(context, userPhone, 'تم نسخ رقم الهاتف');
+                      copyToClipboard(
+                        context,
+                        userPhone,
+                        'contact_section.phone_copied'.tr(),
+                      );
                     }
                   : null,
             ),
@@ -90,7 +100,7 @@ Widget contactSection({
                   ),
                   SizedBox(width: 8.w),
                   Text(
-                    'Loading contact information...',
+                    'general.loading'.tr(),
                     style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                   ),
                 ],

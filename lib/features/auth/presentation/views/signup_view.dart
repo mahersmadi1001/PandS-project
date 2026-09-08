@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/helper/app_validators.dart';
 import 'package:p/core/shared/widgets/TFF.dart';
 import 'package:p/core/shared/widgets/custom_button.dart';
@@ -67,7 +68,7 @@ class _SignUpViewState extends State<SignUpView> {
         }
         if (state is RegisterSuccess) {
           showSuccessSnackBar(
-            message: 'تم إنشاء الحساب بنجاح ✓',
+            message: 'auth_ui.account_created_success'.tr(),
             context: context,
           );
 
@@ -101,7 +102,7 @@ class _SignUpViewState extends State<SignUpView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Sign Up',
+                          'auth.register'.tr(),
                           style: TextStyle(
                             color: AppColors.primaryBlue,
                             fontSize: 30.sp,
@@ -111,27 +112,40 @@ class _SignUpViewState extends State<SignUpView> {
                         SizedBox(height: 30.h),
                         Tff(
                           controller: _fullNameCtrl,
-                          validator: AppValidators.validateName,
-                          label: 'Full Name',
+                          validator: (value) => AppValidators.validateName(
+                            value,
+                            context: context,
+                          ),
+                          label: 'auth.full_name'.tr(),
                         ),
                         SizedBox(height: 22.h),
                         Tff(
                           controller: _emailCtrl,
-                          validator: AppValidators.validateEmail,
-                          label: 'Email',
+                          validator: (value) => AppValidators.validateEmail(
+                            value,
+                            context: context,
+                          ),
+                          label: 'auth.email'.tr(),
                         ),
                         SizedBox(height: 22.h),
                         Tff(
                           controller: _phoneCtrl,
-                          validator: AppValidators.validateSyrianPhone,
-                          label: 'Phone',
+                          validator: (value) =>
+                              AppValidators.validateSyrianPhone(
+                                value,
+                                context: context,
+                              ),
+                          label: 'profile.phone'.tr(),
                         ),
                         SizedBox(height: 22.h),
                         Tff(
                           controller: _passwordCtrl,
                           obscureText: !_showPassword,
-                          validator: AppValidators.validatePassword,
-                          label: 'Password',
+                          validator: (value) => AppValidators.validatePassword(
+                            value,
+                            context: context,
+                          ),
+                          label: 'auth.password'.tr(),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _showPassword
@@ -147,13 +161,13 @@ class _SignUpViewState extends State<SignUpView> {
                         Tff(
                           controller: _confirmPasswordCtrl,
                           obscureText: !_showPassword,
-                          label: 'Confirm Password',
+                          label: 'auth.confirm_password'.tr(),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return 'auth_ui.confirm_password_required'.tr();
                             }
                             if (value != _passwordCtrl.text) {
-                              return 'Passwords do not match';
+                              return 'auth_ui.passwords_not_match'.tr();
                             }
                             return null;
                           },
@@ -172,7 +186,7 @@ class _SignUpViewState extends State<SignUpView> {
                         state is RegisterLoading
                             ? const CircularProgressIndicator()
                             : CustomButton(
-                                buttonText: 'Registration',
+                                buttonText: 'auth.register'.tr(),
                                 ontap: _submit,
                               ),
                         SizedBox(height: 14.h),
@@ -180,7 +194,7 @@ class _SignUpViewState extends State<SignUpView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Do you have an account?',
+                              'auth.already_have_account'.tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15.sp,
@@ -195,7 +209,7 @@ class _SignUpViewState extends State<SignUpView> {
                                 ),
                               ),
                               child: Text(
-                                'Login',
+                                'auth.login'.tr(),
                                 style: TextStyle(
                                   fontSize: 15.sp,
                                   fontWeight: FontWeight.bold,

@@ -68,14 +68,4 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       print('Error saving theme preference: $e');
     }
   }
-
-  Future<bool> loadThemePreference() async {
-    try {
-      final themeBox = await Hive.openBox('theme_box');
-      return themeBox.get('is_dark_mode') ?? false;
-    } catch (e) {
-      print('Error loading theme preference: $e');
-      return false;
-    }
-  }
 }

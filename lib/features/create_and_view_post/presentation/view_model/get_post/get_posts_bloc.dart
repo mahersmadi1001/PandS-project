@@ -112,7 +112,6 @@ class GetPostsBloc extends Bloc<GetPostsEvent, GetPostsState> {
     if (state is GetPostsLoaded) {
       final currentState = state as GetPostsLoaded;
 
-      // إذا كان البحث فارغًا، استخدم الفلاتر الحالية
       if (event.searchQuery.trim().isEmpty) {
         add(
           FetchPosts(
@@ -123,7 +122,6 @@ class GetPostsBloc extends Bloc<GetPostsEvent, GetPostsState> {
           ),
         );
       } else {
-        // قم بالبحث مع الفلاتر الحالية
         add(
           FetchPosts(
             postType: currentState.postType,

@@ -1,5 +1,7 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/shared/widgets/setting_item.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
@@ -22,16 +24,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تأكيد تسجيل الخروج'),
-        content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+        title: Text('settings.confirm_logout'.tr()),
+        content: Text('settings.confirm_logout_message'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('إلغاء'),
+            child: Text('settings.cancel'.tr()),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('تأكيد'),
+            child: Text('settings.confirm'.tr()),
           ),
         ],
       ),
@@ -47,7 +49,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           print('User logged out successfully');
         }
 
-        // Navigate to login screen
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const LoginView()),
@@ -57,7 +58,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       } catch (e) {
         print('Error during logout: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج: $e')),
+          SnackBar(
+            content: Text(
+              'error_messages.logout_error_with_message'.tr(args: ['$e']),
+            ),
+          ),
         );
       }
     }
@@ -74,18 +79,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: AppColors.primaryBlue,
-            title: TitleAppBar(title: "Settings"),
+            title: TitleAppBar(title: 'settings.settings'.tr()),
           ),
           body: Directionality(
-            textDirection: TextDirection.rtl,
+            textDirection: ui.TextDirection.rtl,
             child: Padding(
               padding: EdgeInsets.all(20.w),
               child: Column(
                 children: [
-                  // Theme Switch
                   SettingsTile(
-                    title: "المظهر",
-                    subtitle: isDarkMode ? "الوضع الداكن" : "الوضع الفاتح",
+                    title: 'settings.theme'.tr(),
+                    subtitle: isDarkMode
+                        ? 'settings.dark_theme'.tr()
+                        : 'settings.light_theme'.tr(),
                     icon: isDarkMode ? Icons.dark_mode : Icons.light_mode,
                     onTap: () {
                       context.read<ThemeBloc>().add(
@@ -95,32 +101,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SnackBar(
                           content: Text(
                             !isDarkMode
-                                ? 'تم تفعيل الوضع الليلي'
-                                : 'تم تفعيل الوضع النهاري',
+                                ? 'settings.dark_mode_enabled'.tr()
+                                : 'settings.light_mode_enabled'.tr(),
                           ),
                           backgroundColor: Colors.green,
                         ),
                       );
                     },
                   ),
-                  const SettingsTile(
-                    title: "الإشعارات",
-                    subtitle: "تخصيص تنبيهات الرسائل والطلبات",
+                  SettingsTile(
+                    title: 'settings.notifications'.tr(),
+                    subtitle: 'settings.notifications_subtitle'.tr(),
                     icon: Icons.notifications_none,
                   ),
-                  const SettingsTile(
-                    title: "اللغة {Language}",
-                    subtitle: "العربية",
+                  SettingsTile(
+                    title: 'settings.language'.tr(),
+                    subtitle: 'settings.arabic'.tr(),
                     icon: Icons.language,
                   ),
                   SettingsTile(
-                    title: "الأمان والخصوصية",
-                    subtitle: "تغيير كلمة المرور وتأمين الحساب",
+                    title: 'settings.security'.tr(),
+                    subtitle: 'settings.security_subtitle'.tr(),
                     icon: Icons.lock_outline,
                   ),
                   const Spacer(),
                   SettingsTile(
-                    title: "تسجيل الخروج",
+                    title: 'settings.logout'.tr(),
                     subtitle: "",
                     icon: Icons.logout,
                     textColor: AppColors.errorRed,

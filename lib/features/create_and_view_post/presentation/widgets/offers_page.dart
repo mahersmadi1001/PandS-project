@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
@@ -30,7 +31,6 @@ class _OffersPageState extends State<OffersPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Posts list
             Expanded(
               child: BlocBuilder<GetPostsBloc, GetPostsState>(
                 builder: (context, state) {
@@ -48,7 +48,7 @@ class _OffersPageState extends State<OffersPage> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'حدث خطأ في جلب العروض',
+                            'error_messages.fetch_offers_error'.tr(),
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class _OffersPageState extends State<OffersPage> {
                                 RefreshPosts(postType: PostType.offer),
                               );
                             },
-                            child: Text('إعادة المحاولة'),
+                            child: Text('error_messages.retry'.tr()),
                           ),
                         ],
                       ),
@@ -89,7 +89,7 @@ class _OffersPageState extends State<OffersPage> {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'لا توجد عروض حالياً',
+                              'error_messages.no_offers'.tr(),
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
@@ -98,7 +98,7 @@ class _OffersPageState extends State<OffersPage> {
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'حاول لاحقاً أو قم بإنشاء عرض جديد',
+                              'error_messages.try_later_create_offer'.tr(),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey[500],
@@ -109,7 +109,6 @@ class _OffersPageState extends State<OffersPage> {
                       );
                     }
 
-                    // Group posts by category
                     final Map<String, List<PostEntity>> postsByCategory = {};
                     for (final post in state.posts) {
                       final category = post.category;

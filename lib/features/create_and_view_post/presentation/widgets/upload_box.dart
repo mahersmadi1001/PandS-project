@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -35,23 +36,19 @@ class _UploadBoxState extends State<UploadBox> {
               });
 
               try {
-                // Request storage permissions for Android
                 if (Platform.isAndroid) {
-                  // For Android 13+ (API 33+)
                   if (await Permission.photos.isGranted) {
-                    // Permission already granted
                   } else {
-                    // Request permission
                     final status = await Permission.photos.request();
                     if (status != PermissionStatus.granted) {
-                      // Fallback to storage permission for older Android versions
                       final storageStatus = await Permission.storage.request();
                       if (storageStatus != PermissionStatus.granted) {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Storage permission is required to select images',
+                                'Storage permission is required to select images'
+                                    .tr(),
                               ),
                               backgroundColor: Colors.red,
                               duration: Duration(seconds: 3),
@@ -75,14 +72,13 @@ class _UploadBoxState extends State<UploadBox> {
                 if (pickedFile != null && mounted) {
                   final file = File(pickedFile.path);
 
-                  // Verify file exists
                   if (await file.exists()) {
                     widget.onImageSelected(file);
                   } else {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Selected file does not exist'),
+                          content: Text('upload_box.file_not_exist'.tr()),
                           backgroundColor: Colors.red,
                           duration: Duration(seconds: 2),
                         ),
@@ -95,7 +91,11 @@ class _UploadBoxState extends State<UploadBox> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to pick image: ${e.toString()}'),
+                      content: Text(
+                        'upload_box.pick_image_failed'.tr(
+                          args: ['${e.toString()}'],
+                        ),
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -149,7 +149,7 @@ class _UploadBoxState extends State<UploadBox> {
                           ),
                           SizedBox(height: 10.h),
                           Text(
-                            'Error loading image',
+                            'errors.invalid_format'.tr(),
                             style: TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -167,7 +167,7 @@ class _UploadBoxState extends State<UploadBox> {
                     size: 30.w,
                   ),
                   SizedBox(height: 10.h),
-                  Text("Upload image"),
+                  Text('upload_box.upload_image'.tr()),
                 ],
               ),
       ),

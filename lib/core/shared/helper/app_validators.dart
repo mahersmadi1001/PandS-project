@@ -1,117 +1,161 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppValidators {
-  static final RegExp _nameRegex = RegExp(r'^[\u0600-\u06FFa-zA-Z\s]{2,30}$');
-
-  static final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  static final RegExp _syrianPhoneRegex = RegExp(r'^09[3-9][0-9]{7}$');
-  static final RegExp _passwordRegex = RegExp(
-    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$',
+  static final _nameRegex = RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$');
+  static final _syrianPhoneRegex = RegExp(r'^09\d{8}$');
+  static final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  static final _passwordRegex = RegExp(
+    r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
   );
 
-  static String? validateName(String? value) {
-    if (value == null || value.isEmpty) return 'Please enter the name';
+  static String? validateName(String? value, {BuildContext? context}) {
+    if (value == null || value.isEmpty)
+      return context != null
+          ? 'validators.name_required'.tr()
+          : 'Please enter the name';
     if (!_nameRegex.hasMatch(value))
-      return "The name must contain letters only";
+      return context != null
+          ? 'validators.name_letters_only'.tr()
+          : 'The name must contain letters only';
     return null;
   }
 
-  static String? validateSyrianPhone(String? value) {
+  static String? validateSyrianPhone(String? value, {BuildContext? context}) {
     if (value == null || value.isEmpty) {
-      return "Please enter the phone number";
+      return context != null
+          ? 'validators.phone_required'.tr()
+          : 'Please enter the phone number';
     }
 
     if (!_syrianPhoneRegex.hasMatch(value.trim())) {
-      return "Incorrect phone number (example: 09xxxxxxxx)";
+      return context != null
+          ? 'validators.phone_incorrect'.tr()
+          : 'Incorrect phone number (example: 09xxxxxxxx)';
     }
     return null;
   }
 
-  static String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) return "Please enter the email";
-    if (!_emailRegex.hasMatch(value)) return "The email format is incorrect";
+  static String? validateEmail(String? value, {BuildContext? context}) {
+    if (value == null || value.isEmpty)
+      return context != null
+          ? 'validators.email_required'.tr()
+          : 'Please enter the email';
+    if (!_emailRegex.hasMatch(value))
+      return context != null
+          ? 'validators.email_incorrect'.tr()
+          : 'The email format is incorrect';
     return null;
   }
 
-  static String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) return "Please enter the password";
+  static String? validatePassword(String? value, {BuildContext? context}) {
+    if (value == null || value.isEmpty)
+      return context != null
+          ? 'validators.password_required'.tr()
+          : 'Please enter the password';
     if (!_passwordRegex.hasMatch(value)) {
-      return "It must contain uppercase and lowercase letters, numbers, and symbols";
+      return context != null
+          ? 'validators.password_requirements'.tr()
+          : 'It must contain uppercase and lowercase letters, numbers, and symbols';
     }
     return null;
   }
 
-  // Post creation validation methods
-  static String? validateTitle(String? value) {
+  static String? validateTitle(String? value, {BuildContext? context}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a title';
+      return context != null
+          ? 'validators.title_required'.tr()
+          : 'Please enter a title';
     }
     if (value.trim().length < 3) {
-      return 'Title must be at least 3 characters long';
+      return context != null
+          ? 'validators.title_min_length'.tr()
+          : 'Title must be at least 3 characters long';
     }
     if (value.trim().length > 100) {
-      return 'Title must be less than 100 characters';
+      return context != null
+          ? 'validators.title_max_length'.tr()
+          : 'Title must be less than 100 characters';
     }
     return null;
   }
 
-  static String? validateCategory(String? value) {
+  static String? validateCategory(String? value, {BuildContext? context}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please select a category';
+      return context != null
+          ? 'validators.category_required'.tr()
+          : 'Please select a category';
     }
     return null;
   }
 
-  static String? validateProvince(String? value) {
+  static String? validateProvince(String? value, {BuildContext? context}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please select a province';
+      return context != null
+          ? 'validators.province_required'.tr()
+          : 'Please select a province';
     }
     return null;
   }
 
-  static String? validateBudget(String? value) {
+  static String? validateBudget(String? value, {BuildContext? context}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a budget';
+      return context != null
+          ? 'validators.budget_required'.tr()
+          : 'Please enter a budget';
     }
 
     final budgetValue = double.tryParse(value.trim());
     if (budgetValue == null) {
-      return 'Please enter a valid number';
+      return context != null
+          ? 'validators.budget_invalid'.tr()
+          : 'Please enter a valid number';
     }
     if (budgetValue <= 0) {
-      return 'Budget must be greater than 0';
+      return context != null
+          ? 'validators.budget_positive'.tr()
+          : 'Budget must be greater than 0';
     }
     if (budgetValue > 1000000) {
-      return 'Budget seems too high';
+      return context != null
+          ? 'validators.budget_too_high'.tr()
+          : 'Budget seems too high';
     }
     return null;
   }
 
-  static String? validateDescription(String? value) {
+  static String? validateDescription(String? value, {BuildContext? context}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter a description';
+      return context != null
+          ? 'validators.description_required'.tr()
+          : 'Please enter a description';
     }
     if (value.trim().length < 10) {
-      return 'Description must be at least 10 characters long';
+      return context != null
+          ? 'validators.description_min_length'.tr()
+          : 'Description must be at least 10 characters long';
     }
     if (value.trim().length > 1000) {
-      return 'Description must be less than 1000 characters';
+      return context != null
+          ? 'validators.description_max_length'.tr()
+          : 'Description must be less than 1000 characters';
     }
     return null;
   }
 
-  static String? validateImage(File? imageFile) {
+  static String? validateImage(File? imageFile, {BuildContext? context}) {
     if (imageFile == null) {
-      return 'Please upload an image';
+      return context != null
+          ? 'validators.image_required'.tr()
+          : 'Please upload an image';
     }
-
-    // Check file size (max 5MB)
     final fileSize = imageFile.lengthSync();
     if (fileSize > 5 * 1024 * 1024) {
-      return 'Image size must be less than 5MB';
+      return context != null
+          ? 'validators.image_size_limit'.tr()
+          : 'Image size must be less than 5MB';
     }
-
-    // Check file extension
     final fileName = imageFile.path.toLowerCase();
     final validExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
     final hasValidExtension = validExtensions.any(
@@ -119,7 +163,9 @@ class AppValidators {
     );
 
     if (!hasValidExtension) {
-      return 'Please upload a valid image file (JPG, PNG, or GIF)';
+      return context != null
+          ? 'validators.image_format'.tr()
+          : 'Please upload a valid image file (JPG, PNG, or GIF)';
     }
 
     return null;

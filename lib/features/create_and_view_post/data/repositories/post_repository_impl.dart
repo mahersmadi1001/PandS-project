@@ -33,13 +33,11 @@ class PostRepositoryImpl implements PostRepository {
     required File imageFile,
   }) async {
     try {
-      // الخطوة ١: رفع الصورة على Supabase → جلب الـ URL
       final String imageUrl = await remote.uploadImage(
         imageFile: imageFile,
         postId: post.postId,
       );
 
-      // الخطوة ٢: دمج الـ URL في نموذج المنشور
       final PostModel postModel = PostModel(
         postId: post.postId,
         creatorId: post.creatorId,
@@ -50,11 +48,10 @@ class PostRepositoryImpl implements PostRepository {
         description: post.description,
         province: post.province,
         price: post.price,
-        image: imageUrl, // الـ URL من Supabase
+        image: imageUrl,
         createdAt: post.createdAt,
       );
 
-      // الخطوة ٣: حفظ المنشور في Firestore
       await remote.savePost(postModel);
 
       return const Right(null);

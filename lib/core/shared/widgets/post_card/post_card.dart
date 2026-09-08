@@ -151,7 +151,10 @@ class PostCard extends StatelessWidget {
                           SizedBox(width: 4.w),
                           Flexible(
                             child: Text(
-                              PostCardFun.formatTime(createdAt: post.createdAt),
+                              PostCardFun.formatTime(
+                                createdAt: post.createdAt,
+                                context: context,
+                              ),
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 color: Colors.grey[600],
