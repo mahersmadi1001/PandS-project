@@ -51,18 +51,10 @@ class _SplashBody extends StatelessWidget {
           const Row(),
           CircleAvatar(
             backgroundColor: Colors.transparent,
-            radius: 90.r,
-            child: Image.asset('assets/images/logo.PNG', fit: BoxFit.fill),
+            radius: 130.r,
+            child: Image.asset('assets/images/logo.png', fit: BoxFit.fill),
           ),
-          Text(
-            'P&S',
-            style: TextStyle(
-              shadows: const [Shadow(blurRadius: 3, offset: Offset(2, 2))],
-              color: AppColors.primaryBlue,
-              fontSize: 37.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+
           SizedBox(height: 60.h),
           SizedBox(
             width: 220.w,

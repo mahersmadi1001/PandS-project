@@ -16,9 +16,7 @@ class RemoteDataSources {
     try {
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
 
       final existing = await firestore
@@ -29,7 +27,7 @@ class RemoteDataSources {
           .timeout(_timeout);
 
       if (existing.docs.isNotEmpty) {
-        throw Exception('هذا البريد الإلكتروني مسجل مسبقاً');
+        throw Exception('datasource_errors.email_already_registered');
       }
 
       await firestore
@@ -46,11 +44,9 @@ class RemoteDataSources {
           e.toString().contains('Connection refused') ||
           e.toString().contains('Network') ||
           e.toString().contains('Internet')) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
-      throw Exception('حدث خطأ: ${e.toString()}');
+      throw Exception('datasource_errors.generic_error');
     }
   }
 
@@ -61,9 +57,7 @@ class RemoteDataSources {
     try {
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
 
       final result = await firestore
@@ -74,13 +68,13 @@ class RemoteDataSources {
           .timeout(_timeout);
 
       if (result.docs.isEmpty) {
-        throw Exception('البريد الإلكتروني غير موجود');
+        throw Exception('datasource_errors.email_not_found');
       }
 
       final data = result.docs.first.data();
 
       if (data['password'] != password) {
-        throw Exception('كلمة المرور غير صحيحة');
+        throw Exception('datasource_errors.password_incorrect');
       }
 
       return UserModel.fromMap(data);
@@ -91,11 +85,9 @@ class RemoteDataSources {
           e.toString().contains('Connection refused') ||
           e.toString().contains('Network') ||
           e.toString().contains('Internet')) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
-      throw Exception('حدث خطأ: ${e.toString()}');
+      throw Exception('datasource_errors.generic_error');
     }
   }
 
@@ -103,9 +95,7 @@ class RemoteDataSources {
     try {
       final hasConnection = await connectionChecker.hasConnection;
       if (!hasConnection) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
 
       final doc = await firestore
@@ -123,11 +113,9 @@ class RemoteDataSources {
           e.toString().contains('Connection refused') ||
           e.toString().contains('Network') ||
           e.toString().contains('Internet')) {
-        throw Exception(
-          'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة',
-        );
+        throw Exception('datasource_errors.no_internet');
       }
-      throw Exception('حدث خطأ: ${e.toString()}');
+      throw Exception('datasource_errors.generic_error');
     }
   }
 
@@ -136,15 +124,15 @@ class RemoteDataSources {
   String _mapFirebaseError(FirebaseException e) {
     switch (e.code) {
       case 'unavailable':
-        return 'لا يوجد اتصال بالإنترنت، تحقق من اتصالك وأعد المحاولة';
+        return 'datasource_errors.no_internet';
       case 'permission-denied':
-        return 'ليس لديك صلاحية، تواصل مع المطوّر';
+        return 'datasource_errors.permission_denied_developer';
       case 'deadline-exceeded':
-        return 'انتهت مهلة الاتصال، أعد المحاولة';
+        return 'datasource_errors.deadline_exceeded';
       case 'not-found':
-        return 'البيانات غير موجودة';
+        return 'datasource_errors.data_not_found';
       default:
-        return 'حدث خطأ: ${e.message ?? e.code}';
+        return 'datasource_errors.generic_error';
     }
   }
 }

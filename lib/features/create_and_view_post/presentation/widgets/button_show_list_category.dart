@@ -1,37 +1,37 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/list_address.dart';
 import 'package:p/core/string/list_addrees_string.dart';
 import 'package:p/core/theme/app_colors.dart';
 
-class ButtonShowListCategory extends StatefulWidget {
+class ButtonShowListCategory extends StatelessWidget {
+  final String selectedCategory;
+  final Function(String) onCategorySelected;
+
   const ButtonShowListCategory({
     super.key,
     required this.selectedCategory,
     required this.onCategorySelected,
   });
-  final String selectedCategory;
-  final Function(String) onCategorySelected;
-  @override
-  State<ButtonShowListCategory> createState() => _ButtonShowListCategoryState();
-}
 
-class _ButtonShowListCategoryState extends State<ButtonShowListCategory> {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: AppColors.primaryBlue, width: 2),
-        borderRadius: BorderRadiusGeometry.all(Radius.circular(16.r)),
+        side: BorderSide(color: AppColors.primaryBlue, width: 1.5),
+        borderRadius: BorderRadius.all(Radius.circular(16.r)),
       ),
-
-      height: 55.h,
-      minWidth: 240.w,
+      height: 50.h,
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
       onPressed: () {
         showModalBottomSheet(
           isDismissible: true,
           isScrollControlled: true,
-          backgroundColor: AppColors.cardLight,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          ),
           context: context,
           builder: (context) {
             return SizedBox(
@@ -39,9 +39,9 @@ class _ButtonShowListCategoryState extends State<ButtonShowListCategory> {
               child: Center(
                 child: ListAddress(
                   items: ConstensApp.serviceCategories,
-                  selectedItem: widget.selectedCategory,
+                  selectedItem: selectedCategory,
                   onSelected: (category) {
-                    widget.onCategorySelected(category);
+                    onCategorySelected(category);
                     Navigator.pop(context);
                   },
                 ),
@@ -50,20 +50,23 @@ class _ButtonShowListCategoryState extends State<ButtonShowListCategory> {
           },
         );
       },
-      child: Expanded(
-        child: Row(
-          spacing: 8.w,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                widget.selectedCategory ?? "Categories",
-                style: TextStyle(color: AppColors.primaryBlue),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              selectedCategory,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.primaryBlue,
+                fontSize: 13.sp,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            Icon(Icons.arrow_downward, color: AppColors.primaryBlue),
-          ],
-        ),
+          ),
+          SizedBox(width: 4.w),
+          Icon(Icons.keyboard_arrow_down, color: AppColors.primaryBlue, size: 20.sp),
+        ],
       ),
     );
   }

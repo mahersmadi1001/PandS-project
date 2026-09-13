@@ -6,17 +6,14 @@ sealed class CreatePostState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// الحالة الابتدائية — النموذج فارغ
 class CreatePostInitial extends CreatePostState {
   const CreatePostInitial();
 }
 
-/// جارٍ تحميل بيانات المستخدم
 class CreatePostLoadingUser extends CreatePostState {
   const CreatePostLoadingUser();
 }
 
-/// تم تحميل بيانات المستخدم بنجاح
 class CreatePostUserLoaded extends CreatePostState {
   final String userId;
   final String userName;
@@ -25,17 +22,14 @@ class CreatePostUserLoaded extends CreatePostState {
   List<Object?> get props => [userId, userName];
 }
 
-/// جارٍ رفع الصورة على Supabase
 class CreatePostUploadingImage extends CreatePostState {
   const CreatePostUploadingImage();
 }
 
-/// جارٍ حفظ المنشور في Firestore
 class CreatePostSaving extends CreatePostState {
   const CreatePostSaving();
 }
 
-/// تم النشر بنجاح
 class CreatePostSuccess extends CreatePostState {
   final PostEntity post;
   const CreatePostSuccess({required this.post});
@@ -44,7 +38,6 @@ class CreatePostSuccess extends CreatePostState {
   List<Object?> get props => [post];
 }
 
-/// فشل النشر
 class CreatePostFailure extends CreatePostState {
   final String message;
   const CreatePostFailure({required this.message});

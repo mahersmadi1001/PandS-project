@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/plas_holder_image.dart';
@@ -6,10 +7,10 @@ import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart
 import 'package:p/features/auth/domain/entities/user.dart';
 import 'package:p/features/auth/domain/repositories/auth_reposatory.dart';
 import 'package:get_it/get_it.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/contact_info.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/contact_secation.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/detai_item.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/detail_section.dart';
+import 'package:p/core/theme/neumorphic_styles.dart';
 
 class PostDetailsScreen extends StatefulWidget {
   final PostEntity post;
@@ -44,20 +45,12 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       final authRepository = GetIt.instance<AuthRepository>();
       final result = await authRepository.getUserById(widget.post.creatorId);
 
-      result.fold(
-        (failure) {
-          // Handle error - keep using existing data
-          print('Error fetching user data: $failure');
-        },
-        (user) {
-          setState(() {
-            userEntity = user;
-          });
-        },
-      );
+      result.fold((failure) {}, (user) {
+        setState(() {
+          userEntity = user;
+        });
+      });
     } catch (e) {
-      // Handle error
-      print('Exception fetching user data: $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -69,131 +62,145 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          // App bar with image
           SliverAppBar(
             expandedHeight: 300.h,
             pinned: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (widget.post.image.isNotEmpty)
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40.r),
-                        bottomRight: Radius.circular(40.r),
-                      ),
-                      child: Image.network(
-                        widget.post.image,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return PlasHolder();
-                        },
-                      ),
-                    )
-                  else
-                    PlasHolder(),
-                ],
+              background: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(40.r),
+                    bottomRight: Radius.circular(40.r),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.shadowDarkBottom
+                          : AppColors.shadowLightBottom,
+                      offset: const Offset(0, 10),
+                      blurRadius: 15,
+                      spreadRadius: -5,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(40.r),
+                    bottomRight: Radius.circular(40.r),
+                  ),
+                  child: widget.post.image.isNotEmpty
+                      ? Image.network(
+                          widget.post.image,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              PlasHolder(),
+                        )
+                      : PlasHolder(),
+                ),
               ),
             ),
           ),
-
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.all(24.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title and price
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
                           widget.post.title,
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primaryBlue,
-                            height: 1.5,
-                          ),
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                height: 1.4,
+                              ),
                         ),
                       ),
-                      SizedBox(width: 16.w),
+                      SizedBox(width: 20.w),
                       Container(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 8.h,
+                          horizontal: 20.w,
+                          vertical: 12.h,
                         ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryBlue,
-                          borderRadius: BorderRadius.circular(12.r),
+                        decoration: NeumorphicStyles.getDecoration(
+                          context,
+                          borderRadius: 16.r,
                         ),
                         child: Text(
                           "${widget.post.price} \$",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
                     ],
                   ),
+
+                  SizedBox(height: 24.h),
+
                   DetailSection(
                     title: "",
                     children: [
                       DetailItem(
-                        label: "Description",
+                        label: "post_details.description".tr(),
                         value: widget.post.description,
                       ),
                     ],
                   ),
-                  SizedBox(height: 10.h),
 
-                  // User info
+                  SizedBox(height: 32.h),
+
                   Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.grey[200]!),
+                    padding: EdgeInsets.all(20.w),
+                    decoration: NeumorphicStyles.getDecoration(
+                      context,
+                      borderRadius: 20.r,
                     ),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 30.r,
-                          backgroundColor: AppColors.primaryBlue.withOpacity(
-                            0.1,
+                        Container(
+                          width: 56.w,
+                          height: 56.w,
+                          decoration: NeumorphicStyles.getDecoration(
+                            context,
+                            isCircle: true,
                           ),
-                          child: Icon(
-                            Icons.person,
-                            color: AppColors.primaryBlue,
-                            size: 30.w,
+                          child: Center(
+                            child: Icon(
+                              Icons.person,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 28.w,
+                            ),
                           ),
                         ),
-                        SizedBox(width: 16.w),
+                        SizedBox(width: 20.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 widget.post.creatorName,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 4.h),
                               Text(
                                 widget.post.category,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.grey[600],
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
@@ -202,37 +209,49 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 32.h),
 
-                  // Details section
-                  DetailSection(
-                    title: 'Details',
-                    children: [
-                      DetailItem(
-                        label: 'Category',
-                        value: widget.post.category,
-                      ),
-                      DetailItem(
-                        label: 'Province',
-                        value: widget.post.province,
-                      ),
-                      DetailItem(label: 'Price', value: widget.post.price),
-                      DetailItem(
-                        label: 'Type',
-                        value: widget.isRequest ? 'Request' : 'Offer',
-                      ),
-                    ],
+                  Container(
+                    padding: EdgeInsets.all(20.w),
+                    decoration: NeumorphicStyles.getDecoration(
+                      context,
+                      borderRadius: 20.r,
+                    ),
+                    child: DetailSection(
+                      title: 'post_details.details'.tr(),
+                      children: [
+                        DetailItem(
+                          label: 'post_details.category'.tr(),
+                          value: widget.post.category,
+                        ),
+                        DetailItem(
+                          label: 'post_details.province'.tr(),
+                          value: widget.post.province,
+                        ),
+                        DetailItem(
+                          label: 'post_details.price'.tr(),
+                          value: widget.post.price,
+                        ),
+                        DetailItem(
+                          label: 'post_details.type'.tr(),
+                          value: widget.isRequest
+                              ? 'post_details.request'.tr()
+                              : 'post_details.offer'.tr(),
+                        ),
+                      ],
+                    ),
                   ),
 
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 40.h),
 
-                  // Contact section
                   contactSection(
                     context: context,
                     isLoading: isLoading,
                     userEntity: userEntity,
                     post: widget.post,
                   ),
+
+                  SizedBox(height: 40.h),
                 ],
               ),
             ),

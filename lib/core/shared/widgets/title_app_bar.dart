@@ -12,8 +12,8 @@ class TitleAppBar extends StatelessWidget {
       style: TextStyle(
         shadows: [
           Shadow(
-            blurRadius: 10,
-            offset: Offset(1.3, 2),
+            blurRadius: 7,
+            offset: Offset(1, 2),
             color: AppColors.textPrimaryLight,
           ),
         ],

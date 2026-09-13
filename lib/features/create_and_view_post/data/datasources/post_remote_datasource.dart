@@ -55,9 +55,9 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
 
       return publicUrl;
     } on StorageException catch (e) {
-      throw Exception('فشل رفع الصورة: ${e.message}');
+      throw Exception('datasource_errors.image_upload_failed');
     } catch (e) {
-      throw Exception('لا يوجد اتصال بالإنترنت أثناء رفع الصورة');
+      throw Exception('datasource_errors.no_internet_upload');
     }
   }
 
@@ -72,7 +72,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
     } on Exception {
-      throw Exception('لا يوجد اتصال بالإنترنت، أعد المحاولة');
+      throw Exception('datasource_errors.no_internet_retry');
     }
   }
 
@@ -126,7 +126,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
     } catch (e) {
-      throw Exception('خطأ في جلب المنشورات: $e');
+      throw Exception('datasource_errors.fetch_posts_error');
     }
   }
 
@@ -141,20 +141,20 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     } on FirebaseException catch (e) {
       throw Exception(_mapFirebaseError(e));
     } on Exception {
-      throw Exception('لا يوجد اتصال بالإنترنت، أعد المحاولة');
+      throw Exception('datasource_errors.no_internet_retry');
     }
   }
 
   String _mapFirebaseError(FirebaseException e) {
     switch (e.code) {
       case 'unavailable':
-        return 'لا يوجد اتصال بالإنترنت';
+        return 'datasource_errors.no_internet';
       case 'permission-denied':
-        return 'ليس لديك صلاحية';
+        return 'datasource_errors.permission_denied';
       case 'deadline-exceeded':
-        return 'انتهت مهلة الاتصال، أعد المحاولة';
+        return 'datasource_errors.deadline_exceeded';
       default:
-        return 'حدث خطأ: ${e.message ?? e.code}';
+        return 'datasource_errors.unknown_error';
     }
   }
 }

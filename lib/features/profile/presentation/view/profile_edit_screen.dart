@@ -332,7 +332,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: AppColors.borderLight),
+                      border: Border.all(color: AppColors.backgroundLight),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +352,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
-                                color: AppColors.borderLight,
+                                color: AppColors.backgroundLight,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -379,7 +379,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
-                                color: AppColors.borderLight,
+                                color: AppColors.backgroundLight,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -405,7 +405,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
-                                color: AppColors.borderLight,
+                                color: AppColors.backgroundLight,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -431,7 +431,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
-                                color: AppColors.borderLight,
+                                color: AppColors.backgroundLight,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -457,7 +457,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8.r),
                               borderSide: BorderSide(
-                                color: AppColors.borderLight,
+                                color: AppColors.backgroundLight,
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(

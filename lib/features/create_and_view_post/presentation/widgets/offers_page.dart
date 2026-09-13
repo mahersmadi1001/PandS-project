@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
-import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/post_filter_home.dart';
 
 class OffersPage extends StatefulWidget {
@@ -57,7 +54,7 @@ class _OffersPageState extends State<OffersPage> {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            state.message,
+                            state.message.tr(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14.sp,

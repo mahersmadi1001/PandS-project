@@ -147,7 +147,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                               ),
                               SizedBox(height: 8.h),
                               Text(
-                                _userData!['full_name'] ?? 'general.not_specified'.tr(),
+                                _userData!['full_name'] ??
+                                    'general.not_specified'.tr(),
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
@@ -169,7 +170,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: AppColors.borderLight),
+                      border: Border.all(color: AppColors.backgroundLight),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

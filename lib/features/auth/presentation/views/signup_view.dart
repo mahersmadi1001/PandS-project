@@ -64,7 +64,7 @@ class _SignUpViewState extends State<SignUpView> {
     return BlocConsumer<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterError) {
-          showErrorSnackBar(message: state.message, context: context);
+          showErrorSnackBar(message: state.message.tr(), context: context);
         }
         if (state is RegisterSuccess) {
           showSuccessSnackBar(

@@ -1,14 +1,12 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
-import 'package:p/core/theme/app_colors.dart';
-import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
-import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
+import 'package:p/features/history/presentation/widgets/offers_section.dart';
+import 'package:p/features/history/presentation/widgets/requests_section.dart';
+import 'package:p/features/history/presentation/widgets/section_header.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -21,284 +19,86 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HistoryBloc>().add(const GetHistoryPosts());
     });
-  }
-
-  void _showDeleteAllConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('history_screen.confirm_delete'.tr()),
-        content: Text('history_screen.confirm_delete_all'.tr()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('history_screen.no'.tr()),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<HistoryBloc>().add(const ClearHistory());
-            },
-            child: Text(
-              'history_screen.yes'.tr(),
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteConfirmation(BuildContext context, String postId) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('history_screen.confirm_delete'.tr()),
-        content: Text('history_screen.confirm_delete_post'.tr()),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('history_screen.no'.tr()),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<HistoryBloc>().add(DeletePost(postId: postId));
-            },
-            child: Text(
-              'history_screen.yes'.tr(),
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryBlue,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: TitleAppBar(title: "history.history".tr()),
         actions: [
           BlocBuilder<HistoryBloc, HistoryState>(
             builder: (context, state) {
-              return IconButton(
-                icon: const Icon(Icons.delete_sweep, color: Colors.red),
-                onPressed: () {
-                  _showDeleteAllConfirmation(context);
-                },
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.delete_sweep_rounded,
+                    color: Colors.redAccent,
+                  ),
+                  onPressed: () => showDeleteAllConfirmation(context),
+                ),
               );
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-         
-            Padding(
-              padding: EdgeInsets.all(8.sp),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "history_screen.requests".tr(),
-                    style: TextStyle(
-                      color: AppColors.primaryBlue,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_sweep, color: Colors.red),
-                    onPressed: () {
-                      _showDeleteAllConfirmation(context);
-                    },
-                  ),
-                ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 12.h),
+              SectionHeader(
+                context: context,
+                title: "history_screen.requests".tr(),
               ),
-            ),
-
-            BlocBuilder<HistoryBloc, HistoryState>(
-              builder: (context, state) {
-                if (state is HistoryLoading) {
-                  return SizedBox(
-                    height: 200.h,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (state is HistoryError) {
-                  return SizedBox(
-                    height: 200.sp,
-                    child: Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(color: Colors.red, fontSize: 16.sp),
-                      ),
-                    ),
-                  );
-                }
-
-                final requestedPosts = state is HistoryLoaded
-                    ? state.posts
-                          .where((p) => p.postType == PostType.request)
-                          .toList()
-                    : <PostEntity>[];
-
-                if (requestedPosts.isEmpty) {
-                  return SizedBox(
-                    height: 200,
-                    child: Center(
-                      child: Text(
-                        'history_screen.no_requests_currently'.tr(),
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      ),
-                    ),
-                  );
-                }
-
-                return SizedBox(
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      viewportFraction: 0.8,
-                      height: 310.h,
-                      enableInfiniteScroll: false,
-                    ),
-                    items: requestedPosts.map((post) {
-                      return PostCard(
-                        post: post,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PostDetailsScreen(
-                                  isRequest: true,
-                                  post: post,
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        onOfferTap: null,
-                        onDelete: () =>
-                            _showDeleteConfirmation(context, post.postId),
-                      );
-                    }).toList(),
-                  ),
-                );
-              },
-            ),
-
-      
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "history_screen.offers".tr(),
-                    style: TextStyle(
-                      color: AppColors.primaryBlue,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_sweep, color: Colors.red),
-                    onPressed: () {
-                      _showDeleteAllConfirmation(context);
-                    },
-                  ),
-                ],
+              SizedBox(height: 8.h),
+              RequestsSection(),
+              SizedBox(height: 20.h),
+              SectionHeader(
+                context: context,
+                title: "history_screen.offers".tr(),
               ),
-            ),
-
-          
-            BlocBuilder<HistoryBloc, HistoryState>(
-              builder: (context, state) {
-                if (state is HistoryLoading) {
-                  return SizedBox(
-                    height: 200.h,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (state is HistoryError) {
-                  return SizedBox(
-                    height: 200.h,
-                    child: Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(color: Colors.red, fontSize: 16.sp),
-                      ),
-                    ),
-                  );
-                }
-
-                final offeredPosts = state is HistoryLoaded
-                    ? state.posts
-                          .where((p) => p.postType == PostType.offer)
-                          .toList()
-                    : <PostEntity>[];
-
-                if (offeredPosts.isEmpty) {
-                  return SizedBox(
-                    height: 200.h,
-                    child: Center(
-                      child: Text(
-                        'history_screen.no_offers_currently'.tr(),
-                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                      ),
-                    ),
-                  );
-                }
-
-                return SizedBox(
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      viewportFraction: 0.8,
-                      height: 310.h,
-                      enableInfiniteScroll: false,
-                    ),
-                    items: offeredPosts.map((post) {
-                      return PostCard(
-                        post: post,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PostDetailsScreen(
-                                post: post,
-                                isRequest: post.postType == PostType.request,
-                              ),
-                            ),
-                          );
-                        },
-                        onOfferTap: null,
-                        onDelete: () =>
-                            _showDeleteConfirmation(context, post.postId),
-                      );
-                    }).toList(),
-                  ),
-                );
-              },
-            ),
-          ],
+              SizedBox(height: 8.h),
+              OffersSection(),
+              SizedBox(height: 100.h),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+void showDeleteAllConfirmation(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      title: Text('history_screen.confirm_delete'.tr()),
+      content: Text('history_screen.confirm_delete_all'.tr()),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('history_screen.no'.tr()),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            context.read<HistoryBloc>().add(const ClearHistory());
+          },
+          child: Text(
+            'history_screen.yes'.tr(),
+            style: const TextStyle(color: Colors.red),
+          ),
+        ),
+      ],
+    ),
+  );
 }

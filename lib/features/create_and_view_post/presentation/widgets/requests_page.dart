@@ -7,6 +7,7 @@ import 'package:p/core/shared/widgets/post_card/post_card.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/views/post_details_screen.dart';
+import 'package:p/core/theme/neumorphic_styles.dart';
 
 class RequsetsPage extends StatefulWidget {
   const RequsetsPage({super.key});
@@ -19,7 +20,6 @@ class _RequsetsPageState extends State<RequsetsPage> {
   @override
   void initState() {
     super.initState();
-
     context.read<GetPostsBloc>().add(FetchPosts(postType: PostType.request));
   }
 
@@ -40,37 +40,56 @@ class _RequsetsPageState extends State<RequsetsPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 64.w,
-                            color: Colors.red[400],
+                          Container(
+                            padding: EdgeInsets.all(20.w),
+                            decoration: NeumorphicStyles.getDecoration(
+                              context,
+                              isCircle: true,
+                            ),
+                            child: Icon(
+                              Icons.error_outline,
+                              size: 48.w,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                           ),
-                          SizedBox(height: 16.h),
+                          SizedBox(height: 24.h),
                           Text(
                             'error_messages.fetch_requests_error'.tr(),
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[600],
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            state.message,
+                            state.message.tr(),
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.grey[500],
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          SizedBox(height: 16.h),
-                          ElevatedButton(
-                            onPressed: () {
+                          SizedBox(height: 32.h),
+                          GestureDetector(
+                            onTap: () {
                               context.read<GetPostsBloc>().add(
                                 RefreshPosts(postType: PostType.request),
                               );
                             },
-                            child: Text('error_messages.retry'.tr()),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 40.w,
+                                vertical: 14.h,
+                              ),
+                              decoration: NeumorphicStyles.getDecoration(
+                                context,
+                                borderRadius: 16.r,
+                              ),
+                              child: Text(
+                                'error_messages.retry'.tr(),
+                                style: Theme.of(context).textTheme.labelLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -81,27 +100,29 @@ class _RequsetsPageState extends State<RequsetsPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.inbox_outlined,
-                              size: 64.w,
-                              color: Colors.grey[400],
+                            Container(
+                              padding: EdgeInsets.all(24.w),
+                              decoration: NeumorphicStyles.getDecoration(
+                                context,
+                                isCircle: true,
+                              ),
+                              child: Icon(
+                                Icons.inbox_outlined,
+                                size: 56.w,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                             ),
-                            SizedBox(height: 16.h),
+                            SizedBox(height: 24.h),
                             Text(
                               'error_messages.no_requests'.tr(),
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[600],
-                              ),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                             SizedBox(height: 8.h),
                             Text(
                               'error_messages.try_later_create_request'.tr(),
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: Colors.grey[500],
-                              ),
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -124,7 +145,10 @@ class _RequsetsPageState extends State<RequsetsPage> {
                         );
                       },
                       child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 16.h,
+                        ),
                         itemCount: postsByCategory.keys.length,
                         itemBuilder: (context, index) {
                           final category = postsByCategory.keys.elementAt(
@@ -138,26 +162,28 @@ class _RequsetsPageState extends State<RequsetsPage> {
                               SizedBox(height: 16.h),
                               Container(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
-                                  vertical: 8.h,
+                                  horizontal: 20.w,
+                                  vertical: 12.h,
                                 ),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(8.r),
+                                decoration: NeumorphicStyles.getDecoration(
+                                  context,
+                                  borderRadius: 24.r,
                                 ),
                                 child: Text(
                                   category,
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800],
-                                  ),
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
                                 ),
                               ),
-                              SizedBox(height: 8.h),
+                              SizedBox(height: 24.h),
                               ...categoryPosts.map(
                                 (post) => Padding(
-                                  padding: EdgeInsets.only(bottom: 12.h),
+                                  padding: EdgeInsets.only(bottom: 24.h),
                                   child: PostCard(
                                     post: post,
                                     onTap: () {},

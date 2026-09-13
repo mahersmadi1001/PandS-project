@@ -1,14 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:p/core/theme/app_colors.dart';
+import 'package:p/core/theme/neumorphic_styles.dart';
 
 class DetailSection extends StatelessWidget {
-  const DetailSection({
-    super.key,
-    required this.title,
-    required this.children,
-  });
+  const DetailSection({super.key, required this.title, required this.children});
 
   final String title;
   final List<Widget> children;
@@ -18,23 +13,27 @@ class DetailSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimaryDark,
+        if (title.isNotEmpty) ...[
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
-        ),
-        SizedBox(height: 12.h),
+          SizedBox(height: 16.h),
+        ],
         Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.grey[200]!),
+          padding: EdgeInsets.all(20.w),
+          decoration: NeumorphicStyles.getDecoration(
+            context,
+            borderRadius: 16.r,
           ),
-          child: Column(children: children),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ),
         ),
       ],
     );

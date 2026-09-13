@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:p/core/theme/app_colors.dart';
 
 class DetailItem extends StatelessWidget {
   const DetailItem({super.key, required this.label, required this.value});
@@ -13,13 +12,14 @@ class DetailItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '$label: ',
             style: TextStyle(
               fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primaryBlue,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
           Expanded(
@@ -28,7 +28,7 @@ class DetailItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),

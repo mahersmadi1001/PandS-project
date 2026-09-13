@@ -256,5 +256,28 @@
     "no_offers": "No offers currently",
     "try_later_create_offer": "Try later or create a new offer",
     "logout_error_with_message": "Error during logout: {error}"
+  },
+  "post_details":{
+    "description":"Description",
+    "details":"Details",
+    "category":"Category",
+    "province":"Province",
+    "price":"Price",
+    "type":"Type",
+    "request":"Request",
+    "offer":"Offer"
+  },
+  "search": {
+    "search_error": "An error occurred while searching",
+    "no_results": "No results found for your search",
+    "try_different_terms": "Try changing your search terms or filters"
+  },
+  "bloc_errors": {
+    "no_user_session": "No user session found"
+  },
+  "ui_widgets": {
+    "address": "Address",
+    "categories": "Categories"
   }
+
 }

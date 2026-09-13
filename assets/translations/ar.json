@@ -256,5 +256,27 @@
     "no_offers": "لا توجد عروض حالياً",
     "try_later_create_offer": "حاول لاحقاً أو قم بإنشاء عرض جديد",
     "logout_error_with_message": "حدث خطأ أثناء تسجيل الخروج: {error}"
+  },
+  "post_details": {
+    "description": "الوصف",
+    "details": "التفاصيل",
+    "category": "التصنيف",
+    "province": "المحافظة",
+    "price": "السعر",
+    "type": "النوع",
+    "request": "طلب",
+    "offer": "عرض"
+  },
+  "search": {
+    "search_error": "حدث خطأ أثناء البحث",
+    "no_results": "لم يتم العثور على نتائج لبحثك",
+    "try_different_terms": "حاول تغيير شروط البحث أو الفلاتر"
+  },
+  "bloc_errors": {
+    "no_user_session": "لم يتم العثور على جلسة مستخدم"
+  },
+  "ui_widgets": {
+    "address": "العنوان",
+    "categories": "الفئات"
   }
 }

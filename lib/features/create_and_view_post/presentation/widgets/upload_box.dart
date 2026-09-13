@@ -23,102 +23,102 @@ class UploadBox extends StatefulWidget {
 class _UploadBoxState extends State<UploadBox> {
   bool _isPicking = false;
 
+  Future<void> _pickImage() async {
+    if (_isPicking || !mounted) return;
+
+    setState(() {
+      _isPicking = true;
+    });
+
+    try {
+      if (Platform.isAndroid) {
+        if (!await Permission.photos.isGranted) {
+          final status = await Permission.photos.request();
+          if (status != PermissionStatus.granted) {
+            final storageStatus = await Permission.storage.request();
+            if (storageStatus != PermissionStatus.granted) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Storage permission is required to select images'.tr(),
+                    ),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+              }
+              return;
+            }
+          }
+        }
+      }
+
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 600,
+        imageQuality: 80,
+      );
+
+      if (pickedFile != null && mounted) {
+        final file = File(pickedFile.path);
+
+        if (await file.exists()) {
+          widget.onImageSelected(file);
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('upload_box.file_not_exist'.tr()),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'upload_box.pick_image_failed'.tr(args: [e.toString()]),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPicking = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
-      onTap: _isPicking
-          ? null
-          : () async {
-              if (!mounted) return;
-
-              setState(() {
-                _isPicking = true;
-              });
-
-              try {
-                if (Platform.isAndroid) {
-                  if (await Permission.photos.isGranted) {
-                  } else {
-                    final status = await Permission.photos.request();
-                    if (status != PermissionStatus.granted) {
-                      final storageStatus = await Permission.storage.request();
-                      if (storageStatus != PermissionStatus.granted) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Storage permission is required to select images'
-                                    .tr(),
-                              ),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
-                        }
-                        return;
-                      }
-                    }
-                  }
-                }
-
-                final picker = ImagePicker();
-                final pickedFile = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  maxWidth: 800,
-                  maxHeight: 600,
-                  imageQuality: 80,
-                );
-
-                if (pickedFile != null && mounted) {
-                  final file = File(pickedFile.path);
-
-                  if (await file.exists()) {
-                    widget.onImageSelected(file);
-                  } else {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('upload_box.file_not_exist'.tr()),
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    }
-                  }
-                }
-              } catch (e) {
-                print('Error picking image: $e');
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'upload_box.pick_image_failed'.tr(
-                          args: ['${e.toString()}'],
-                        ),
-                      ),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              } finally {
-                if (mounted) {
-                  setState(() {
-                    _isPicking = false;
-                  });
-                }
-              }
-            },
+      onTap: _pickImage,
       child: Container(
         width: double.infinity,
         height: 120.h,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.blue.shade100,
+            color: isDark ? Colors.grey.shade800 : AppColors.primaryBlue,
             style: BorderStyle.solid,
+            width: 1.5,
           ),
           color: widget.selectedImage != null
               ? Colors.transparent
-              : Colors.blue.withAlpha(30),
+              : (isDark
+                    ? Colors.black12
+                    : AppColors.primaryBlue.withOpacity(0.05)),
           borderRadius: BorderRadius.circular(15.r),
         ),
         child: _isPicking
@@ -131,7 +131,7 @@ class _UploadBoxState extends State<UploadBox> {
               )
             : widget.selectedImage != null
             ? ClipRRect(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(13.r),
                 child: Image.file(
                   widget.selectedImage!,
                   width: double.infinity,
@@ -150,7 +150,7 @@ class _UploadBoxState extends State<UploadBox> {
                           SizedBox(height: 10.h),
                           Text(
                             'errors.invalid_format'.tr(),
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
@@ -164,10 +164,16 @@ class _UploadBoxState extends State<UploadBox> {
                   Icon(
                     Icons.cloud_upload_outlined,
                     color: AppColors.primaryBlue,
-                    size: 30.w,
+                    size: 32.w,
                   ),
                   SizedBox(height: 10.h),
-                  Text('upload_box.upload_image'.tr()),
+                  Text(
+                    'upload_box.upload_image'.tr(),
+                    style: TextStyle(
+                      color: isDark ? Colors.white70 : Colors.black87,
+                      fontSize: 14.sp,
+                    ),
+                  ),
                 ],
               ),
       ),

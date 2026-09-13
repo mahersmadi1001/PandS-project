@@ -20,13 +20,15 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.primaryBlue,
           ),
@@ -36,21 +38,22 @@ class CustomTextField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.grey),
             filled: true,
-            fillColor: Theme.of(context).cardColor,
+            fillColor: isDark ? Colors.black12 : AppColors.lightBlue,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide.none,
             ),
-            enabledBorder: OutlineInputBorder(
+            focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: AppColors.primaryBlue),
+              borderSide: BorderSide(color: AppColors.primaryBlue, width: 1.5),
             ),
           ),
         ),
-        SizedBox(height: 16.h),
       ],
     );
   }

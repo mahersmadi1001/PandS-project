@@ -1,23 +1,19 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:p/core/shared/helper/app_validators.dart';
+import 'package:p/core/shared/nav_bar.dart';
 import 'package:p/core/shared/widgets/custom_text_field.dart';
 import 'package:p/core/shared/widgets/snack_bar_widget.dart';
-
 import 'package:p/core/shared/widgets/title_app_bar.dart';
-
-import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
-import 'package:p/core/shared/helper/app_validators.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/button_show_list_address.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/button_show_list_category.dart';
-
-import 'package:p/features/create_and_view_post/presentation/widgets/chips_widet.dart';
-
-import 'package:p/core/shared/nav_bar.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/budget_type_post.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/button_submet_form.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/lists_row.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/neu_container.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/upload_box.dart';
 
 class CreateOrderScreen extends StatefulWidget {
@@ -28,16 +24,16 @@ class CreateOrderScreen extends StatefulWidget {
 }
 
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
-  final titleController = TextEditingController();
-  final budgetController = TextEditingController();
-  final descriptionController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController budgetController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   PostType _selectedPostType = PostType.offer;
   String? selectedCategory;
   String? selectedProvince;
   File? _selectedImage;
 
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? _currentUserId;
   String? _currentUserName;
 
@@ -69,11 +65,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       showErrorSnackBar(context: context, message: validationError);
       return false;
     }
-
     return true;
   }
 
-  void _submitForm() {
+  void submitForm() {
     if (!validateForm()) return;
 
     if (_currentUserId == null || _currentUserName == null) {
@@ -111,7 +106,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           );
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MainScreen()),
+            MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else if (state is CreatePostUserLoaded) {
           setState(() {
@@ -123,158 +118,73 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       child: BlocBuilder<CreatePostBloc, CreatePostState>(
         builder: (context, state) {
           final isLoading =
-              state is CreatePostUploadingImage ||
-              state is CreatePostSaving ||
-              state is CreatePostLoadingUser;
+              state is CreatePostUploadingImage || state is CreatePostSaving;
 
           return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
-              backgroundColor: AppColors.primaryBlue,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
               title: TitleAppBar(title: "post.create_post".tr()),
             ),
             body: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    padding: EdgeInsets.all(20.w),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          CustomTextField(
-                            label: "create_post.title".tr(),
-                            hint: "create_post.title_hint".tr(),
-                            controller: titleController,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ButtonShowListCategory(
-                                  selectedCategory:
-                                      selectedCategory ??
-                                      "create_post.categories".tr(),
-                                  onCategorySelected: (category) {
-                                    setState(() {
-                                      selectedCategory = category;
-                                    });
-                                  },
-                                ),
+                ? const Center(child: CircularProgressIndicator())
+                : SafeArea(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 12.h,
+                      ),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            NeuContainer(
+                              child: CustomTextField(
+                                label: "create_post.title".tr(),
+                                hint: "create_post.title_hint".tr(),
+                                controller: titleController,
                               ),
-                              SizedBox(width: 20.w),
-                              Expanded(
-                                child: ButtonShowListAddrees(
-                                  selectedProvince:
-                                      selectedProvince ??
-                                      "create_post.address".tr(),
-                                  onProvinceSelected: (province) {
-                                    setState(() {
-                                      selectedProvince = province;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 12.h),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: CustomTextField(
-                                  label: "create_post.budget".tr(),
-                                  hint: "create_post.budget_hint".tr(),
-                                  controller: budgetController,
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ),
-
-                              SizedBox(width: 15.w),
-
-                              Expanded(
-                                flex: 3,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "create_post.type_post".tr(),
-                                      style: TextStyle(
-                                        color: AppColors.primaryBlue,
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    // SizedBox(height: 10.h),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: PostTypeToggle(
-                                            selectedType: _selectedPostType,
-                                            onSelected: (value) {
-                                              setState(() {
-                                                _selectedPostType = value;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          CustomTextField(
-                            label: "create_post.detailed_description".tr(),
-                            hint: "create_post.description_hint".tr(),
-                            maxLines: 4,
-                            controller: descriptionController,
-                          ),
-
-                          UploadBox(
-                            selectedImage: _selectedImage,
-                            onImageSelected: (image) {
-                              setState(() {
-                                _selectedImage = image;
-                              });
-                            },
-                          ),
-
-                          SizedBox(height: 30.h),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50.h,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryBlue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                              ),
-                              onPressed: isLoading ? null : _submitForm,
-                              child: isLoading
-                                  ? SizedBox(
-                                      height: 20.h,
-                                      width: 20.w,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
-                                      ),
-                                    )
-                                  : Text(
-                                      "create_post.create".tr(),
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                             ),
-                          ),
-                          SizedBox(height: 30.sp),
-                        ],
+                            SizedBox(height: 16.h),
+                            ListsRow(),
+                            SizedBox(height: 16.h),
+                            BudgetandTypePost(
+                              selectedPostType: _selectedPostType,
+                              budgetController: budgetController,
+                            ),
+                            SizedBox(height: 16.h),
+                            NeuContainer(
+                              child: CustomTextField(
+                                label: "create_post.detailed_description".tr(),
+                                hint: "create_post.description_hint".tr(),
+                                maxLines: 4,
+                                controller: descriptionController,
+                              ),
+                            ),
+                            SizedBox(height: 16.h),
+                            NeuContainer(
+                              padding: EdgeInsets.all(10.r),
+                              child: UploadBox(
+                                selectedImage: _selectedImage,
+                                onImageSelected: (image) {
+                                  setState(() {
+                                    _selectedImage = image;
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 28.h),
+                            ButtonSubmitForm(
+                              isLoading: isLoading,
+                              submitForm: submitForm,
+                            ),
+                            SizedBox(height: 100.h),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -36,7 +36,7 @@ class Onbording extends StatelessWidget {
             width: 250.w,
             decoration: BoxDecoration(
               boxShadow: [],
-              border: Border.all(color: AppColors.borderLight, width: 2),
+              border: Border.all(color: AppColors.backgroundLight, width: 2),
               shape: BoxShape.circle,
               color: Color(0xffeff3fc),
             ),

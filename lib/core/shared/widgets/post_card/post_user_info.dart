@@ -1,32 +1,33 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:p/core/shared/widgets/post_card/post_card_fun.dart';
-import 'package:p/core/theme/app_colors.dart';
+import 'package:p/core/theme/neumorphic_styles.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 
 class PostUserInfo extends StatelessWidget {
   final PostEntity post;
 
-  PostUserInfo({required this.post});
+  const PostUserInfo({Key? key, required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          flex: 3,
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 20.r,
-                backgroundColor: AppColors.primaryBlue.withAlpha(20),
-                child: Icon(
-                  Icons.person,
-                  color: AppColors.primaryBlue,
-                  size: 20.w,
+              Container(
+                width: 44.w,
+                height: 44.w,
+                decoration: NeumorphicStyles.getDecoration(context, isCircle: true),
+                child: Center(
+                  child: Icon(
+                    Icons.person,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 24.w,
+                  ),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -39,16 +40,16 @@ class PostUserInfo extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimaryDark,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
+                    SizedBox(height: 4.h),
                     Text(
                       post.category,
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: Colors.grey[600],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -59,21 +60,16 @@ class PostUserInfo extends StatelessWidget {
             ],
           ),
         ),
-        
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            decoration: BoxDecoration(
+        SizedBox(width: 12.w),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          decoration: NeumorphicStyles.getDecoration(context, borderRadius: 12.r),
+          child: Text(
+            PostCardFun.getPostTypeText(post: post),
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.bold,
               color: PostCardFun.getPostTypeColor(post: post),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Text(
-              PostCardFun.getPostTypeText(post: post),
-              style: TextStyle(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
             ),
           ),
         ),

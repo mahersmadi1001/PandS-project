@@ -44,7 +44,9 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
               ),
             );
           } else {
-            emit(const CreatePostFailure(message: 'No user session found'));
+            emit(
+              const CreatePostFailure(message: 'bloc_errors.no_user_session'),
+            );
           }
         },
       );
@@ -105,7 +107,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
             createdAt: createdAt,
           );
           emit(CreatePostSuccess(post: completePost));
-          // Save post to history
+
           historyBloc.add(SavePostToHistory(post: completePost));
         },
       );

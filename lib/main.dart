@@ -19,6 +19,7 @@ import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/firebase_options.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -31,7 +32,7 @@ void main() async {
   await Hive.openBox('auth_box');
   await Hive.openBox('theme_box');
   await LanguageService.init();
-  await Hive.box('auth_box').clear();
+  // await Hive.box('auth_box').clear();
   await setup();
   await SentryFlutter.init(
     (options) {
@@ -50,7 +51,7 @@ void main() async {
     ),
   );
 }
- 
+
 class PandS extends StatelessWidget {
   const PandS({super.key});
 

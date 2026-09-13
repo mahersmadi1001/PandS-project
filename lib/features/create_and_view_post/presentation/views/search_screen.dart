@@ -23,12 +23,11 @@ class _SearchScreenState extends State<SearchScreen> {
   String _searchQuery = '';
   String? selectedProvince;
   List<String> selectedCategories = [];
-  bool _showFilters = false;
 
   @override
   void initState() {
     super.initState();
-    // Load initial posts
+
     context.read<GetPostsBloc>().add(FetchPosts());
   }
 
@@ -48,7 +47,6 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
 
-    // Apply search if there's a search query
     if (_searchQuery.isNotEmpty) {
       context.read<GetPostsBloc>().add(SearchPosts(searchQuery: _searchQuery));
     }
@@ -71,7 +69,6 @@ class _SearchScreenState extends State<SearchScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search Section
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
@@ -87,7 +84,6 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               child: Column(
                 children: [
-                  // Search Bar
                   TextField(
                     controller: _searchController,
                     onChanged: _onSearchChanged,
@@ -141,7 +137,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'An error occurred while searching',
+                            'search.search_error'.tr(),
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
@@ -150,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            state.message,
+                            state.message.tr(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14.sp,
@@ -180,7 +176,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'No results found for your search',
+                              'search.no_results'.tr(),
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold,
@@ -189,7 +185,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             SizedBox(height: 8.h),
                             Text(
-                              'Try changing your search terms or filters',
+                              'search.try_different_terms'.tr(),
                               style: TextStyle(
                                 fontSize: 14.sp,
                                 color: Colors.grey[500],

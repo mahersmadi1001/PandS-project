@@ -48,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
         if (state is LoginError) {
-          showErrorSnackBar(message: state.message, context: context);
+          showErrorSnackBar(message: state.message.tr(), context: context);
         }
         if (state is LoginSuccess) {
           Navigator.pushReplacement(

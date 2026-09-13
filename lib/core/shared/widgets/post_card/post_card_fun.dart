@@ -8,7 +8,7 @@ class PostCardFun {
   }
 
   static String getPostTypeText({required PostEntity post}) {
-    return post.postType == PostType.request ? 'reguest' : 'offer';
+    return post.postType == PostType.request ? 'request' : 'offer';
   }
 
   static String formatTime({
@@ -46,9 +46,7 @@ class PostCardFun {
         if (difference.inMinutes == 1) {
           return 'time_format.since_minute'.tr();
         } else {
-          return 'time_format.since_minutes'.tr(
-            args: ['${difference.inMinutes}'],
-          );
+          return 'time_format.since_minutes'.tr(args: ['${difference.inMinutes}']);
         }
       } else {
         return 'time_format.now'.tr();
