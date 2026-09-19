@@ -7,20 +7,18 @@ import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart
 import 'package:p/features/create_and_view_post/presentation/widgets/chips_widet.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/neu_container.dart';
 
-class BudgetandTypePost extends StatefulWidget {
-  PostType selectedPostType;
-  TextEditingController? budgetController;
-  BudgetandTypePost({
+class BudgetandTypePost extends StatelessWidget {
+  final PostType selectedPostType;
+  final TextEditingController budgetController;
+  final Function(PostType) onPostTypeSelected;
+
+  const BudgetandTypePost({
     super.key,
     required this.selectedPostType,
     required this.budgetController,
+    required this.onPostTypeSelected,
   });
 
-  @override
-  State<BudgetandTypePost> createState() => _BudgetandTypePostState();
-}
-
-class _BudgetandTypePostState extends State<BudgetandTypePost> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -32,7 +30,7 @@ class _BudgetandTypePostState extends State<BudgetandTypePost> {
             child: CustomTextField(
               label: "create_post.budget".tr(),
               hint: "create_post.budget_hint".tr(),
-              controller: widget.budgetController,
+              controller: budgetController,
               keyboardType: TextInputType.number,
             ),
           ),
@@ -54,12 +52,8 @@ class _BudgetandTypePostState extends State<BudgetandTypePost> {
                 ),
                 SizedBox(height: 8.h),
                 PostTypeToggle(
-                  selectedType: widget.selectedPostType,
-                  onSelected: (value) {
-                    setState(() {
-                      widget.selectedPostType = value;
-                    });
-                  },
+                  selectedType: selectedPostType,
+                  onSelected: onPostTypeSelected,
                 ),
               ],
             ),

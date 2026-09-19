@@ -13,6 +13,14 @@ import 'package:p/features/create_and_view_post/presentation/view_model/create_p
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:p/features/profile/domain/repositories/profile_repository.dart';
+import 'package:p/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:p/features/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:p/features/profile/data/datasources/profile_local_datasource.dart';
+import 'package:p/features/settings/domain/repositories/settings_repository.dart';
+import 'package:p/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:p/features/settings/data/datasources/settings_local_datasource.dart';
+import 'package:p/features/settings/data/datasources/settings_remote_datasource.dart';
+import 'package:p/features/settings/domain/usecases/logout_usecase.dart';
 import 'package:p/features/profile/domain/usecases/get_profile_usecase.dart';
 import 'package:p/features/profile/domain/usecases/update_profile_usecase.dart';
 import 'package:p/features/profile/domain/usecases/upload_profile_image_usecase.dart';
@@ -21,7 +29,6 @@ import 'package:p/features/profile/domain/usecases/generate_profile_link_usecase
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/core/presentation/view_model/theme_bloc.dart';
-import 'package:p/core/services/language_service.dart';
 import 'package:p/core/presentation/view_model/languge_cubit/language_cubit.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
 import 'package:p/features/auth/data/datasources/remote.dart';
@@ -35,12 +42,9 @@ import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
 final di = GetIt.instance;
 
 Future<void> setup() async {
-
   di.registerLazySingleton(() => FirebaseFirestore.instance);
   di.registerLazySingleton(() => Supabase.instance.client);
   di.registerLazySingleton(() => InternetConnectionChecker.instance);
-
-
 
   di.registerLazySingleton<RemoteDataSources>(
     () => RemoteDataSources(firestore: di(), connectionChecker: di()),
@@ -60,12 +64,8 @@ Future<void> setup() async {
   di.registerFactory(() => LoginBloc(loginUsecase: di()));
   di.registerFactory(() => UserSessionBloc(localDataSource: di()));
 
-
   di.registerLazySingleton<PostRemoteDataSource>(
-    () => PostRemoteDataSourceImpl(
-      firestore: di(),
-      supabase: di(),
-    ),
+    () => PostRemoteDataSourceImpl(firestore: di(), supabase: di()),
   );
   di.registerLazySingleton<PostRepository>(
     () => PostRepositoryImpl(remote: di()),
@@ -83,9 +83,20 @@ Future<void> setup() async {
 
   di.registerFactory(() => GetPostsBloc(getPostsUsecase: di()));
 
-
-
-  di.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl());
+  di.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(firestore: di()),
+  );
+  di.registerLazySingleton<ProfileLocalDataSource>(
+    () => ProfileLocalDataSourceImpl(),
+  );
+  di.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      remoteDataSource: di(),
+      localDataSource: di(),
+      firestore: di(),
+      supabase: di(),
+    ),
+  );
   di.registerLazySingleton(() => GetProfileUseCase(di()));
   di.registerLazySingleton(() => UpdateProfileUseCase(di()));
   di.registerLazySingleton(() => UploadProfileImageUseCase(di()));
@@ -102,13 +113,25 @@ Future<void> setup() async {
     ),
   );
 
-
   di.registerFactory(() => ThemeBloc());
-
 
   di.registerFactory(() => LanguageCubit());
 
- 
+  di.registerLazySingleton<SettingsRemoteDataSource>(
+    () => SettingsRemoteDataSourceImpl(),
+  );
+  di.registerLazySingleton<SettingsLocalDataSource>(
+    () => SettingsLocalDataSourceImpl(),
+  );
+  di.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(
+      remoteDataSource: di(),
+      localDataSource: di(),
+      authLocalDataSource: di(),
+    ),
+  );
+  di.registerLazySingleton(() => LogoutUseCase(di()));
+
   di.registerFactory(
     () => HistoryBloc(
       getPostsUsecase: di(),

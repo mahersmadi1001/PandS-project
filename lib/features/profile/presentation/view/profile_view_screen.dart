@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:p/core/theme/app_colors.dart';
 import 'package:p/features/profile/presentation/view/profile_edit_screen.dart';
+import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/animated_profile_avatar.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/neu_action_button.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/staggered_fadeside.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/text_form_profile.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:p/features/profile/presentation/view/widgets/info_row.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key});
@@ -16,215 +20,211 @@ class ProfileViewScreen extends StatefulWidget {
 
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
   final AuthLocalDataSource _authLocalDataSource = AuthLocalDataSourceImpl();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Map<String, dynamic>? _userData;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadProfile();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    try {
-      final userId = _authLocalDataSource.getSession();
-      print('User ID from Hive: $userId');
-
-      if (userId != null && userId.isNotEmpty) {
-        print('Loading user data for ID: $userId');
-        final userDoc = await _firestore.collection('users').doc(userId).get();
-        print('User document exists: ${userDoc.exists}');
-
-        if (userDoc.exists) {
-          final data = userDoc.data() as Map<String, dynamic>;
-          print('User data loaded: $data');
-          setState(() {
-            _userData = data;
-            _isLoading = false;
-          });
-        } else {
-          print('User document does not exist');
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      } else {
-        print('No user ID found in Hive');
-        setState(() {
-          _isLoading = false;
-        });
+  Future<void> _loadProfile() async {
+    final userId = _authLocalDataSource.getSession();
+    if (userId != null && userId.isNotEmpty) {
+      if (mounted) {
+        context.read<ProfileBloc>().add(LoadProfile(uid: userId));
       }
-    } catch (e) {
-      print('Error loading user data: $e');
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('الملف الشخصي'),
-        backgroundColor: AppColors.primaryBlue,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
-            onPressed: () {
-              _loadUserData();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit, color: Colors.white),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditProfileScreen(),
-                ),
-              );
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (result == true || mounted) {
-                _loadUserData();
-              }
-            },
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _userData != null
-          ? SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                children: [
-                  Container(
-                    height: 200.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primaryBlue, Color(0xFF00B4DB)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+            if (state is ProfileLoaded) {
+              final profile = state.profile;
+              return CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 16.h,
                       ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(24),
-                        bottomRight: Radius.circular(24),
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 20.h,
-                          left: 20.w,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "general.profile".tr(),
+                            style: TextStyle(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlue,
+                            ),
+                          ),
+                          Row(
                             children: [
-                              CircleAvatar(
-                                radius: 50.r,
-                                backgroundColor: Colors.white,
-                                child: CircleAvatar(
-                                  radius: 46.r,
-                                  backgroundImage:
-                                      _userData!['profileImageUrl'] != null &&
-                                          _userData!['profileImageUrl']
-                                              .isNotEmpty
-                                      ? NetworkImage(
-                                          _userData!['profileImageUrl'],
-                                        )
-                                      : const AssetImage('assets/logo.png'),
-                                ),
+                              NeuActionButton(
+                                icon: Icons.refresh,
+                                onTap: _loadProfile,
                               ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                _userData!['full_name'] ??
-                                    'general.not_specified'.tr(),
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                              SizedBox(width: 12.w),
+                              NeuActionButton(
+                                icon: Icons.edit,
+                                onTap: () async {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditProfileScreen(),
+                                    ),
+                                  );
+                                  if (result == true || mounted) {
+                                    _loadProfile();
+                                  }
+                                },
                               ),
-                              SizedBox(height: 4.h),
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 20.h),
-
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: AppColors.backgroundLight),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InfoRow(
-                          title: "auth.email".tr(),
-                          value:
-                              _userData!['email'] ??
-                              'general.not_specified'.tr(),
-                          icon: Icons.email,
-                        ),
-                        SizedBox(height: 16.h),
-
-                        InfoRow(
-                          title: 'profile.phone'.tr(),
-                          value:
-                              _userData!['phone'] ??
-                              'general.not_specified'.tr(),
-                          icon: Icons.phone,
-                        ),
-                        SizedBox(height: 16.h),
-
-                        InfoRow(
-                          title: 'profile.bio'.tr(),
-                          value: _userData!['bio'] ?? 'profile.no_bio'.tr(),
-                          icon: Icons.info_outline,
-                        ),
-                        SizedBox(height: 16.h),
-
-                        InfoRow(
-                          title: 'profile.skills'.tr(),
-                          value:
-                              _userData!['skills'] != null &&
-                                  _userData!['skills'].isNotEmpty
-                              ? (_userData!['skills'] as List).join(', ')
-                              : 'profile.no_skills'.tr(),
-                          icon: Icons.work_outline,
-                        ),
-                        SizedBox(height: 16.h),
-
-                        if (_userData!['profileLink'] != null &&
-                            _userData!['profileLink'].isNotEmpty)
-                          InfoRow(
-                            title: 'profile.profile_link'.tr(),
-                            value: _userData!['profileLink'],
-                            icon: Icons.link,
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20.h),
+                          AnimatedProfileAvatar(
+                            imageUrl: profile.profileImageUrl,
                           ),
-                      ],
+                          SizedBox(height: 16.h),
+                          StaggeredFadeSlide(
+                            index: 0,
+                            child: Text(
+                              profile.name.isNotEmpty
+                                  ? profile.name
+                                  : 'general.not_specified'.tr(),
+                              style: TextStyle(
+                                fontSize: 24.sp,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primaryBlue,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30.h),
+
+                          StaggeredFadeSlide(
+                            index: 1,
+                            child: NeuReadOnlyField(
+                              label: "auth.email".tr(),
+                              value: profile.email.isNotEmpty
+                                  ? profile.email
+                                  : 'general.not_specified'.tr(),
+                              icon: Icons.email_outlined,
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
+
+                          StaggeredFadeSlide(
+                            index: 2,
+                            child: NeuReadOnlyField(
+                              label: 'profile.phone'.tr(),
+                              value: 'general.not_specified'.tr(),
+                              icon: Icons.phone_outlined,
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
+
+                          StaggeredFadeSlide(
+                            index: 3,
+                            child: NeuReadOnlyField(
+                              label: 'profile.bio'.tr(),
+                              value: profile.bio.isNotEmpty
+                                  ? profile.bio
+                                  : 'profile.no_bio'.tr(),
+                              icon: Icons.info_outline,
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
+
+                          StaggeredFadeSlide(
+                            index: 4,
+                            child: NeuReadOnlyField(
+                              label: 'profile.skills'.tr(),
+                              value: profile.skills.isNotEmpty
+                                  ? profile.skills.join(', ')
+                                  : 'profile.no_skills'.tr(),
+                              icon: Icons.work_outline,
+                            ),
+                          ),
+
+                          if (profile.profileLink.isNotEmpty) ...[
+                            SizedBox(height: 20.h),
+                            StaggeredFadeSlide(
+                              index: 5,
+                              child: NeuReadOnlyField(
+                                label: 'profile.profile_link'.tr(),
+                                value: profile.profileLink,
+                                icon: Icons.link,
+                              ),
+                            ),
+                          ],
+                          SizedBox(height: 40.h),
+                        ],
+                      ),
                     ),
                   ),
                 ],
+              );
+            }
+
+            if (state is ProfileError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 64.w,
+                      color: Colors.red[400],
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      'profile.profile_not_found'.tr(),
+                      style: TextStyle(
+                        color: AppColors.primaryBlue,
+                        fontSize: 18.sp,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    ElevatedButton(
+                      onPressed: _loadProfile,
+                      child: Text('general.retry'.tr()),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return Center(
+              child: Text(
+                'profile.profile_not_found'.tr(),
+                style: TextStyle(color: AppColors.primaryBlue, fontSize: 18.sp),
               ),
-            )
-          : Center(child: Text('profile.profile_not_found'.tr())),
+            );
+          },
+        ),
+      ),
     );
   }
 }

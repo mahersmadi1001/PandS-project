@@ -8,7 +8,7 @@ import 'package:p/features/create_and_view_post/domain/usecases/create_post_usec
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
 import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/features/auth/domain/usecases/get_saved_session_usecase.dart';
-import 'package:p/features/create_and_view_post/presentation/views/creat_post.dart';
+import 'package:p/features/create_and_view_post/presentation/views/create_post.dart';
 import 'package:p/features/create_and_view_post/presentation/views/home_screen.dart';
 import 'package:p/features/history/presentation/view/history_screen.dart';
 import 'package:p/features/profile/presentation/view/profile_view_screen.dart';
@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = const [
     HomeScreen(),
     HistoryScreen(),
-    CreateOrderScreen(),
+    CreatePostScreen(),
     ProfileViewScreen(),
     SettingsScreen(),
   ];
@@ -42,20 +42,39 @@ class _MainScreenState extends State<MainScreen> {
       ),
       child: Scaffold(
         extendBody: true,
-        body: _screens[currentIndex],
+        body: IndexedStack(index: currentIndex, children: _screens),
         bottomNavigationBar: SafeArea(
           child: Container(
             margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
             height: 65.h,
-            decoration: NeumorphicStyles.getDecoration(context, borderRadius: 32.r),
+            decoration: NeumorphicStyles.getDecoration(
+              context,
+              borderRadius: 32.r,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildNavItem(0, Icons.home_rounded, "navigation.home".tr()),
-                _buildNavItem(1, Icons.history_rounded, "navigation.history".tr()),
-                _buildNavItem(2, Icons.add_circle_outline_rounded, "post.create_post".tr()),
-                _buildNavItem(3, Icons.person_rounded, "navigation.profile".tr()),
-                _buildNavItem(4, Icons.settings_rounded, "navigation.settings".tr()),
+                _buildNavItem(
+                  1,
+                  Icons.history_rounded,
+                  "navigation.history".tr(),
+                ),
+                _buildNavItem(
+                  2,
+                  Icons.add_circle_outline_rounded,
+                  "post.create_post".tr(),
+                ),
+                _buildNavItem(
+                  3,
+                  Icons.person_rounded,
+                  "navigation.profile".tr(),
+                ),
+                _buildNavItem(
+                  4,
+                  Icons.settings_rounded,
+                  "navigation.settings".tr(),
+                ),
               ],
             ),
           ),
@@ -70,17 +89,24 @@ class _MainScreenState extends State<MainScreen> {
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          currentIndex = index;
-        });
+        if (currentIndex != index) {
+          setState(() {
+            currentIndex = index;
+          });
+        }
       },
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        padding: EdgeInsets.symmetric(horizontal: isSelected ? 16.w : 8.w, vertical: 10.h),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.fastOutSlowIn,
+        padding: EdgeInsets.symmetric(
+          horizontal: isSelected ? 16.w : 8.w,
+          vertical: 10.h,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? colorScheme.primary.withOpacity(0.15) : Colors.transparent,
+          color: isSelected
+              ? colorScheme.primary.withOpacity(0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Row(
@@ -88,16 +114,20 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+              color: isSelected
+                  ? colorScheme.primary
+                  : colorScheme.onSurfaceVariant,
               size: 24.w,
             ),
             AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.fastOutSlowIn,
               child: SizedBox(
                 width: isSelected ? null : 0,
                 child: Padding(
-                  padding: EdgeInsets.only(left: isSelected ? 8.w : 0, right: isSelected ? 8.w : 0),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isSelected ? 8.w : 0,
+                  ),
                   child: Text(
                     label,
                     style: TextStyle(

@@ -1,13 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/core/theme/app_colors.dart';
+import 'package:p/features/profile/presentation/view/widgets/edit_profile_widgets/neu_PE_text_field.dart';
+import 'package:p/features/profile/presentation/view/widgets/edit_profile_widgets/neu_button_ef.dart';
+import 'package:p/features/profile/presentation/view/widgets/edit_profile_widgets/profile_image_ef.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/neu_action_button.dart';
+import 'package:p/features/profile/presentation/view/widgets/profile_widgets/staggered_fadeside.dart';
 import 'package:p/features/profile/presentation/view_model/profile_bloc.dart';
+import 'package:p/features/profile/domain/entities/profile_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:p/features/auth/data/datasources/local.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -27,7 +31,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File? _selectedImage;
   bool _isUploading = false;
   final AuthLocalDataSource _authLocalDataSource = AuthLocalDataSourceImpl();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -35,28 +38,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     final userId = _authLocalDataSource.getSession();
     if (userId != null) {
-      _loadUserData(userId);
       context.read<ProfileBloc>().add(LoadProfile(uid: userId));
-    }
-  }
-
-  Future<void> _loadUserData(String userId) async {
-    try {
-      final userDoc = await _firestore.collection('users').doc(userId).get();
-      if (userDoc.exists) {
-        final userData = userDoc.data() as Map<String, dynamic>;
-        setState(() {
-          _nameController.text = userData['full_name'] ?? '';
-          _bioController.text = userData['bio'] ?? '';
-          _professionController.text = userData['profession'] ?? '';
-          _skillsController.text = userData['skills'] != null
-              ? (userData['skills'] as List).join(', ')
-              : '';
-          _profileLinkController.text = userData['profileLink'] ?? '';
-        });
-      }
-    } catch (e) {
-      print('Error loading user data: $e');
     }
   }
 
@@ -74,9 +56,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Future<void> _uploadImage() async {
     if (_selectedImage == null) return;
 
-    setState(() {
-      _isUploading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isUploading = true;
+      });
+    }
 
     try {
       final userId = _authLocalDataSource.getSession();
@@ -94,10 +78,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       );
     } finally {
-      setState(() {
-        _isUploading = false;
-        _selectedImage = null;
-      });
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
+      }
     }
   }
 
@@ -134,424 +119,238 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveProfile() {
     final userId = _authLocalDataSource.getSession();
     if (userId != null) {
-      _updateUserData(userId).then((_) {
-        Navigator.of(context).pop(true);
-      });
-    }
-  }
-
-  Future<void> _updateUserData(String userId) async {
-    try {
-      final userDoc = await _firestore.collection('users').doc(userId).get();
-      if (userDoc.exists) {
-        final currentData = userDoc.data() as Map<String, dynamic>;
-
-        final updateData = <String, dynamic>{
-          'updatedAt': DateTime.now().toIso8601String(),
-        };
-
-        if (_nameController.text.trim() != (currentData['full_name'] ?? '')) {
-          updateData['full_name'] = _nameController.text.trim();
-        }
-        if (_bioController.text.trim() != (currentData['bio'] ?? '')) {
-          updateData['bio'] = _bioController.text.trim();
-        }
-
-        if (_professionController.text.trim() !=
-            (currentData['profession'] ?? '')) {
-          updateData['profession'] = _professionController.text.trim();
-        }
-
-        final newSkills = _skillsController.text
+      final profile = ProfileEntity(
+        uid: userId,
+        name: _nameController.text.trim(),
+        email: '', // Will be fetched from current profile
+        bio: _bioController.text.trim(),
+        profession: _professionController.text.trim(),
+        skills: _skillsController.text
             .split(',')
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
-            .toList();
-        final currentSkills = currentData['skills'] as List? ?? [];
-        if (newSkills.toString() != currentSkills.toString()) {
-          updateData['skills'] = newSkills;
-        }
-
-        if (_profileLinkController.text.trim() !=
-            (currentData['profileLink'] ?? '')) {
-          updateData['profileLink'] = _profileLinkController.text.trim();
-        }
-
-        await _firestore.collection('users').doc(userId).update(updateData);
-        print('User data updated in Firestore');
-      }
-    } catch (e) {
-      print('Error updating user data: $e');
+            .toList(),
+        profileLink: _profileLinkController.text.trim(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      context.read<ProfileBloc>().add(UpdateProfile(profile: profile));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: TitleAppBar(title: 'profile.personal_profile'.tr()),
-        backgroundColor: AppColors.primaryBlue,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share, color: Colors.white),
-            onPressed: _generateProfileLink,
-          ),
-        ],
-      ),
-      body: BlocConsumer<ProfileBloc, ProfileState>(
-        listener: (context, state) {
-          if (state is ProfileError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('profile.upload_failed'.tr())),
-            );
-          }
-          if (state is ProfileUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('profile.profile_updated'.tr())),
-            );
-          }
-          if (state is ProfileImageUploaded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('profile.image_uploaded'.tr())),
-            );
-          }
-          if (state is ProfileImageDeleted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('profile.image_deleted'.tr())),
-            );
-          }
-          if (state is ProfileLinkGenerated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('profile.link_generated'.tr())),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: BlocConsumer<ProfileBloc, ProfileState>(
+          listener: (context, state) {
+            if (state is ProfileError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.upload_failed'.tr())),
+              );
+            }
+            if (state is ProfileUpdated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.profile_updated'.tr())),
+              );
+              Navigator.of(context).pop(true);
+            }
+            if (state is ProfileImageUploaded) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.image_uploaded'.tr())),
+              );
+              if (mounted) {
+                setState(() {
+                  _isUploading = false;
+                  _selectedImage = null;
+                });
+              }
+            }
+            if (state is ProfileImageDeleted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.image_deleted'.tr())),
+              );
+            }
+            if (state is ProfileLinkGenerated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.link_generated'.tr())),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is ProfileLoaded) {
-            final profile = state.profile;
+            if (state is ProfileLoaded) {
+              final profile = state.profile;
 
-            _nameController.text = profile.name;
-            _bioController.text = profile.bio;
-            _professionController.text = profile.profession;
-            _skillsController.text = profile.skills.join(', ');
-            _profileLinkController.text = profile.profileLink;
+              if (_nameController.text.isEmpty && profile.name.isNotEmpty) {
+                if (mounted) {
+                  setState(() {
+                    _nameController.text = profile.name;
+                    _bioController.text = profile.bio;
+                    _professionController.text = profile.profession;
+                    _skillsController.text = profile.skills.join(', ');
+                    _profileLinkController.text = profile.profileLink;
+                  });
+                }
+              }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
-              child: Column(
-                children: [
-                  Container(
-                    height: 200.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primaryBlue, Color(0xFF00B4DB)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+              return CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 16.h,
                       ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(24),
-                        bottomRight: Radius.circular(24),
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        if (profile.profileImageUrl.isNotEmpty)
-                          Positioned(
-                            top: 20.h,
-                            right: 20.w,
-                            child: GestureDetector(
-                              onTap: _deleteProfileImage,
-                              child: Container(
-                                padding: EdgeInsets.all(8.w),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          NeuActionButton(
+                            icon: Icons.arrow_back_ios_new,
+                            onTap: () => Navigator.pop(context),
+                          ),
+                          Text(
+                            'profile.personal_profile'.tr(),
+                            style: TextStyle(
+                              fontSize: 22.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primaryBlue,
                             ),
                           ),
-
-                        Positioned(
-                          bottom: 20.h,
-                          left: 20.w,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: _pickImage,
-                                child: CircleAvatar(
-                                  radius: 50.r,
-                                  backgroundColor: Colors.white,
-                                  child: CircleAvatar(
-                                    radius: 46.r,
-                                    backgroundImage:
-                                        profile.profileImageUrl.isNotEmpty
-                                        ? NetworkImage(profile.profileImageUrl)
-                                        : const AssetImage('assets/logo.png'),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                profile.name,
-                                style: TextStyle(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 4.h),
-                              Text(
-                                profile.profession,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Colors.white.withOpacity(0.9),
-                                ),
-                              ),
-                            ],
+                          NeuActionButton(
+                            icon: Icons.share,
+                            onTap: _generateProfileLink,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 20.h),
-
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: AppColors.backgroundLight),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'profile.name'.tr(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20.h),
+                          AnimatedEditableAvatar(
+                            imageUrl: profile.profileImageUrl,
+                            selectedImage: _selectedImage,
+                            onPickImage: _pickImage,
+                            onDeleteImage: _deleteProfileImage,
                           ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            hintText: 'profile.enter_name'.tr(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
+                          SizedBox(height: 30.h),
+                          StaggeredFadeSlide(
+                            index: 1,
+                            child: NeuPETextField(
+                              controller: _nameController,
+                              label: 'profile.name'.tr(),
+                              hint: 'profile.enter_name'.tr(),
+                              icon: Icons.person_outline,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.h),
-
-                        Text(
-                          'profile.bio'.tr(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextField(
-                          controller: _bioController,
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            hintText: 'profile.enter_bio'.tr(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
+                          SizedBox(height: 20.h),
+                          StaggeredFadeSlide(
+                            index: 2,
+                            child: NeuPETextField(
+                              controller: _bioController,
+                              label: 'profile.bio'.tr(),
+                              hint: 'profile.enter_bio'.tr(),
+                              icon: Icons.info_outline,
+                              maxLines: 3,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.h),
-
-                        Text(
-                          'profile.profession'.tr(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextField(
-                          controller: _professionController,
-                          decoration: InputDecoration(
-                            hintText: 'profile.enter_profession'.tr(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
+                          SizedBox(height: 20.h),
+                          StaggeredFadeSlide(
+                            index: 3,
+                            child: NeuPETextField(
+                              controller: _professionController,
+                              label: 'profile.profession'.tr(),
+                              hint: 'profile.enter_profession'.tr(),
+                              icon: Icons.work_outline,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.h),
-
-                        Text(
-                          'profile.skills'.tr(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextField(
-                          controller: _skillsController,
-                          decoration: InputDecoration(
-                            hintText: 'profile.enter_skills'.tr(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
+                          SizedBox(height: 20.h),
+                          StaggeredFadeSlide(
+                            index: 4,
+                            child: NeuPETextField(
+                              controller: _skillsController,
+                              label: 'profile.skills'.tr(),
+                              hint: 'profile.enter_skills'.tr(),
+                              icon: Icons.psychology_outlined,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.h),
-
-                        Text(
-                          'profile.profile_link'.tr(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        SizedBox(height: 8.h),
-                        TextField(
-                          controller: _profileLinkController,
-                          decoration: InputDecoration(
-                            hintText: 'profile.profile_link'.tr(),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 12.h,
-                            ),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.copy),
-                              onPressed: () =>
-                                  _copyToClipboard(_profileLinkController.text),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: _pickImage,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  foregroundColor: Colors.white,
-                                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                          SizedBox(height: 20.h),
+                          StaggeredFadeSlide(
+                            index: 5,
+                            child: NeuPETextField(
+                              controller: _profileLinkController,
+                              label: 'profile.profile_link'.tr(),
+                              hint: 'profile.profile_link'.tr(),
+                              icon: Icons.link,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.copy,
+                                  color: AppColors.primaryBlue,
                                 ),
-                                child: Text('profile.choose_image'.tr()),
+                                onPressed: () => _copyToClipboard(
+                                  _profileLinkController.text,
+                                ),
                               ),
                             ),
-
-                            SizedBox(width: 10.w),
-
-                            if (_selectedImage != null)
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: _uploadImage,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primaryBlue,
-                                    foregroundColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 12.h,
+                          ),
+                          SizedBox(height: 30.h),
+                          StaggeredFadeSlide(
+                            index: 6,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: NeuButton(
+                                    text: 'profile.choose_image'.tr(),
+                                    onPressed: _pickImage,
+                                    isPrimary: false,
+                                  ),
+                                ),
+                                if (_selectedImage != null) ...[
+                                  SizedBox(width: 16.w),
+                                  Expanded(
+                                    child: NeuButton(
+                                      text: 'profile.upload_image'.tr(),
+                                      onPressed: _uploadImage,
+                                      isLoading: _isUploading,
+                                      isPrimary: true,
                                     ),
                                   ),
-                                  child: _isUploading
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                  Colors.white,
-                                                ),
-                                          ),
-                                        )
-                                      : Text('profile.upload_image'.tr()),
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: 20.h),
-
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _generateProfileLink,
-
-                            child: ElevatedButton(
-                              onPressed: _saveProfile,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryBlue,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 16.h),
-                                minimumSize: const Size(double.infinity, 50),
-                              ),
-                              child: Text(
-                                'profile.save_changes'.tr(),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                                ],
+                              ],
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 20.h),
+                          StaggeredFadeSlide(
+                            index: 7,
+                            child: NeuButton(
+                              text: 'profile.save_changes'.tr(),
+                              onPressed: _saveProfile,
+                              isPrimary: true,
+                              isFullWidth: true,
+                            ),
+                          ),
+                          SizedBox(height: 40.h),
+                        ],
+                      ),
                     ),
                   ),
                 ],
-              ),
-            );
-          }
+              );
+            }
 
-          return Center(child: Text('profile.profile_not_found'.tr()));
-        },
+            return Center(child: Text('profile.profile_not_found'.tr()));
+          },
+        ),
       ),
     );
   }

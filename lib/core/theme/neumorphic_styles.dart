@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:p/core/theme/app_colors.dart';
-
 class NeumorphicStyles {
   static BoxDecoration getDecoration(
     BuildContext context, {

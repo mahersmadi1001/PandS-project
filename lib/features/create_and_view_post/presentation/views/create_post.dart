@@ -10,20 +10,20 @@ import 'package:p/core/shared/widgets/snack_bar_widget.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
 import 'package:p/features/create_and_view_post/domain/entities/post_entity.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/create_post/create_post_bloc.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/budget_type_post.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/button_submet_form.dart';
-import 'package:p/features/create_and_view_post/presentation/widgets/lists_row.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/create_post_widgets/budget_type_post.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/create_post_widgets/button_submet_form.dart';
+import 'package:p/features/create_and_view_post/presentation/widgets/create_post_widgets/lists_row.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/neu_container.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/upload_box.dart';
 
-class CreateOrderScreen extends StatefulWidget {
-  const CreateOrderScreen({super.key});
+class CreatePostScreen extends StatefulWidget {
+  const CreatePostScreen({super.key});
 
   @override
-  State<CreateOrderScreen> createState() => _CreateOrderScreenState();
+  State<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _CreateOrderScreenState extends State<CreateOrderScreen> {
+class _CreatePostScreenState extends State<CreatePostScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController budgetController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -109,10 +109,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else if (state is CreatePostUserLoaded) {
-          setState(() {
-            _currentUserId = state.userId;
-            _currentUserName = state.userName;
-          });
+          if (mounted) {
+            setState(() {
+              _currentUserId = state.userId;
+              _currentUserName = state.userName;
+            });
+          }
         }
       },
       child: BlocBuilder<CreatePostBloc, CreatePostState>(
@@ -150,11 +152,29 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                               ),
                             ),
                             SizedBox(height: 16.h),
-                            ListsRow(),
+                            ListsRow(
+                              selectedCategory: selectedCategory,
+                              selectedProvince: selectedProvince,
+                              onCategorySelected: (category) {
+                                setState(() {
+                                  selectedCategory = category;
+                                });
+                              },
+                              onProvinceSelected: (province) {
+                                setState(() {
+                                  selectedProvince = province;
+                                });
+                              },
+                            ),
                             SizedBox(height: 16.h),
                             BudgetandTypePost(
                               selectedPostType: _selectedPostType,
                               budgetController: budgetController,
+                              onPostTypeSelected: (postType) {
+                                setState(() {
+                                  _selectedPostType = postType;
+                                });
+                              },
                             ),
                             SizedBox(height: 16.h),
                             NeuContainer(
