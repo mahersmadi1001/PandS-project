@@ -13,14 +13,12 @@ class CreatePostUsecase {
     required File imageFile,
   }) async {
     try {
-      // Upload image and get URL
       final uploadResult = await repository.uploadImage(
         imageFile: imageFile,
         postId: post.postId,
       );
 
       return uploadResult.fold((failure) => Left(failure), (imageUrl) async {
-        // Save post with image URL
         final saveResult = await repository.createPost(
           post: post,
           imageFile: imageFile,

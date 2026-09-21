@@ -10,11 +10,8 @@ import 'package:p/features/history/presentation/view_model/history_bloc.dart';
 import 'package:p/features/history/presentation/widgets/empty_orerror_card.dart';
 import 'package:p/features/history/presentation/widgets/requests_section.dart';
 
-
 class OffersSection extends StatelessWidget {
-  const OffersSection({
-    super.key,
-  });
+  const OffersSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,30 +19,30 @@ class OffersSection extends StatelessWidget {
       builder: (context, state) {
         if (state is HistoryLoading) {
           return SizedBox(
-            height: 365.h,
+            height: 387.h,
             child: const Center(child: CircularProgressIndicator()),
           );
         }
-    
+
         if (state is HistoryError) {
           return EmptyOrErrorCard(context: context, message: state.message);
         }
-    
+
         final offeredPosts = state is HistoryLoaded
             ? state.posts.where((p) => p.postType == PostType.offer).toList()
             : <PostEntity>[];
-    
+
         if (offeredPosts.isEmpty) {
           return EmptyOrErrorCard(
             context: context,
             message: 'history_screen.no_offers_currently'.tr(),
           );
         }
-    
+
         return CarouselSlider.builder(
           itemCount: offeredPosts.length,
           options: CarouselOptions(
-            height: 365.h,
+            height: 387.h,
             viewportFraction: 0.86,
             enlargeCenterPage: true,
             enableInfiniteScroll: false,

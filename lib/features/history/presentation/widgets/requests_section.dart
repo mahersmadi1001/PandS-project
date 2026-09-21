@@ -18,7 +18,7 @@ class RequestsSection extends StatelessWidget {
       builder: (context, state) {
         if (state is HistoryLoading) {
           return SizedBox(
-            height: 365.h,
+            height: 387.h,
             child: const Center(child: CircularProgressIndicator()),
           );
         }
@@ -44,7 +44,7 @@ class RequestsSection extends StatelessWidget {
         return CarouselSlider.builder(
           itemCount: requestedPosts.length,
           options: CarouselOptions(
-            height: 365.h,
+            height: 387.h,
             viewportFraction: 0.86,
             enlargeCenterPage: true,
             enableInfiniteScroll: false,

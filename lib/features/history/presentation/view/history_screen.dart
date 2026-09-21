@@ -60,14 +60,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 title: "history_screen.requests".tr(),
               ),
               SizedBox(height: 8.h),
-              RequestsSection(),
+              const RequestsSection(),
               SizedBox(height: 20.h),
               SectionHeader(
                 context: context,
                 title: "history_screen.offers".tr(),
               ),
               SizedBox(height: 8.h),
-              OffersSection(),
+              const OffersSection(),
               SizedBox(height: 100.h),
             ],
           ),
@@ -76,6 +76,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 }
+
 void showDeleteAllConfirmation(BuildContext context) {
   showDialog(
     context: context,

@@ -109,6 +109,7 @@
     "security": "الأمان والخصوصية",
     "security_subtitle": "تغيير كلمة المرور وتأمين الحساب",
     "logout": "تسجيل الخروج",
+    "logout_subtitle": "الخروج من حسابك",
     "confirm_logout": "تأكيد تسجيل الخروج",
     "confirm_logout_message": "هل أنت متأكد من تسجيل الخروج؟",
     "cancel": "إلغاء",

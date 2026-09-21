@@ -9,20 +9,12 @@ abstract class SettingsLocalDataSource {
 class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
   @override
   Future<SettingsEntity?> getCachedSettings(String userId) async {
-    // Implement local caching if needed (e.g., using Hive or SharedPreferences)
-    // For now, returning null as caching is not implemented
     return null;
   }
 
   @override
-  Future<void> cacheSettings(SettingsEntity settings) async {
-    // Implement local caching if needed
-    // For now, this is a no-op
-  }
+  Future<void> cacheSettings(SettingsEntity settings) async {}
 
   @override
-  Future<void> clearSession() async {
-    // Implement session clearing
-    // For now, this is a no-op
-  }
+  Future<void> clearSession() async {}
 }

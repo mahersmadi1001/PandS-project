@@ -122,7 +122,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final profile = ProfileEntity(
         uid: userId,
         name: _nameController.text.trim(),
-        email: '', // Will be fetched from current profile
+        email: '',
         bio: _bioController.text.trim(),
         profession: _professionController.text.trim(),
         skills: _skillsController.text

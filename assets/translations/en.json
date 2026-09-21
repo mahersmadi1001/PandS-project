@@ -109,6 +109,7 @@
     "security": "Security",
     "security_subtitle": "Change password and secure account",
     "logout": "Logout",
+    "logout_subtitle": "Sign out of your account",
     "confirm_logout": "Confirm Logout",
     "confirm_logout_message": "Are you sure you want to logout?",
     "cancel": "Cancel",

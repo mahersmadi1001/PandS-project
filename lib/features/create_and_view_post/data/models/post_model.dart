@@ -15,25 +15,22 @@ class PostModel extends PostEntity {
     required super.createdAt,
   });
 
-  // ── تحويل من Entity إلى Map لحفظه في Firestore ─────────────────────────────
-  // الحقول مطابقة لما يظهر في Firebase Console
   Map<String, dynamic> toMap() {
     return {
       'post_id': postId,
       'creator_id': creatorId,
       'creator_name': creatorName,
-      'post_type': postType.name, // 'request' | 'offer'
+      'post_type': postType.name,
       'category': category,
       'title': title,
       'description': description,
       'province': province,
       'price': price,
-      'image': image, // Supabase public URL
+      'image': image,
       'created_at': createdAt,
     };
   }
 
-  // ── تحويل من Firestore إلى Model ────────────────────────────────────────────
   factory PostModel.fromMap(Map<String, dynamic> map) {
     return PostModel(
       postId: map['post_id'] as String? ?? '',
@@ -52,10 +49,9 @@ class PostModel extends PostEntity {
 
   static PostType _parseType(dynamic val) {
     if (val == 'offer') return PostType.offer;
-    return PostType.request; // default
+    return PostType.request;
   }
 
-  // ── نسخ مع تعديل (مفيد عند رفع الصورة وتحديث الـ URL) ───────────────────────
   PostModel copyWith({String? image}) {
     return PostModel(
       postId: postId,

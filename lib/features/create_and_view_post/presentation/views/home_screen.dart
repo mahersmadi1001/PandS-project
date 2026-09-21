@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:p/core/config/di.dart';
 import 'package:p/core/shared/widgets/title_app_bar.dart';
-import 'package:p/core/theme/neumorphic_styles.dart'; // إضافة النمط النيومورفي
+import 'package:p/core/theme/neumorphic_styles.dart';
 import 'package:p/features/create_and_view_post/presentation/view_model/get_post/get_posts_bloc.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/requests_page.dart';
 import 'package:p/features/create_and_view_post/presentation/widgets/offers_page.dart';
@@ -20,13 +20,11 @@ class HomeScreen extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor:
-            colorScheme.surface, 
+        backgroundColor: colorScheme.surface,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          scrolledUnderElevation:
-              0, 
+          scrolledUnderElevation: 0,
           centerTitle: true,
           toolbarHeight: 60.h,
           title: TitleAppBar(title: "post.view_posts".tr()),
@@ -72,14 +70,13 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: 24.r,
                 ),
                 child: TabBar(
-                  dividerColor:
-                      Colors.transparent, 
+                  dividerColor: Colors.transparent,
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorPadding: EdgeInsets.all(4.w),
                   splashBorderRadius: BorderRadius.circular(20.r),
                   indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
-                 
+
                     color: colorScheme.primary.withOpacity(0.15),
                   ),
                   labelColor: colorScheme.primary,
@@ -87,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                   labelStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.sp,
-                    fontFamily: 'Cairo', 
+                    fontFamily: 'Cairo',
                   ),
                   unselectedLabelStyle: TextStyle(
                     fontWeight: FontWeight.w600,

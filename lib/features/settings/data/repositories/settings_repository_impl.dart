@@ -18,13 +18,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<SettingsEntity?> getSettings(String userId) async {
     try {
-      // Try local cache first
       final cachedSettings = await localDataSource.getCachedSettings(userId);
       if (cachedSettings != null) {
         return cachedSettings;
       }
 
-      // Fetch from remote
       final settings = await remoteDataSource.getSettings(userId);
       if (settings != null) {
         await localDataSource.cacheSettings(settings);

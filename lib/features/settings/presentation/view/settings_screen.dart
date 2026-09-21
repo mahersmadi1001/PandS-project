@@ -132,10 +132,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: "settings.security_subtitle".tr(),
                         icon: Icons.lock_outline,
                       ),
-                      const Spacer(),
                       SettingsTile(
                         title: "settings.logout".tr(),
-                        subtitle: "",
+                        subtitle: "settings.logout_subtitle".tr(),
                         icon: Icons.logout,
                         textColor: AppColors.errorRed,
                         onTap: _logout,

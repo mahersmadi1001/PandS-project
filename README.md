@@ -1,1 +1,1 @@
-The project is in maintenance mode
+The app is in maintenance mode to improve security and change the UI style

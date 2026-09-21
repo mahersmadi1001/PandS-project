@@ -12,7 +12,7 @@ class PostEntity extends Equatable {
   final String description;
   final String province;
   final String price;
-  final String image; // Supabase public URL
+  final String image;
   final String createdAt;
 
   const PostEntity({
@@ -44,7 +44,6 @@ class PostEntity extends Equatable {
     createdAt,
   ];
 
-  /// Convert PostEntity to Map for storage
   Map<String, dynamic> toMap() {
     return {
       'postId': postId,

@@ -22,13 +22,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<ProfileEntity?> getProfile(String uid) async {
     try {
-      // Try local cache first
       final cachedProfile = await localDataSource.getCachedProfile(uid);
       if (cachedProfile != null) {
         return cachedProfile;
       }
 
-      // Fetch from remote
       final profile = await remoteDataSource.getProfile(uid);
       if (profile != null) {
         await localDataSource.cacheProfile(profile);
