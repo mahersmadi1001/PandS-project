@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -22,10 +23,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
-    url: 'https://uscnnlokapfxozeuxdex.supabase.co',
-    anonKey: 'sb_publishable_1sO_oZNgWOF0p4GZh5Mjyw_40Xk8PnK',
+    url: dotenv.env['SUPABASE_URL']!,
+    publishableKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
 
   await Hive.initFlutter();
@@ -36,8 +38,7 @@ void main() async {
   await setup();
   await SentryFlutter.init(
     (options) {
-      options.dsn =
-          'https://beedc187cf3dd58e645bc196f45d8f35@o4511354663927808.ingest.de.sentry.io/4511354718388304';
+      options.dsn = dotenv.env["SENTRY_DSN"];
     },
     appRunner: () => runApp(
       EasyLocalization(
